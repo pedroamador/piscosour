@@ -1,6 +1,7 @@
 ---
 title: Getting started
 layout: doc_page.html
+order: 1
 ---
 
 # Instalación de piscosour con npm

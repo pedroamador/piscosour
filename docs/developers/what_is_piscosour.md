@@ -1,6 +1,7 @@
 ---
 title: What is Piscosour
 layout: doc_page.html
+order: 2
 ---
 
 # pisco-website: Create a documentation webpage.

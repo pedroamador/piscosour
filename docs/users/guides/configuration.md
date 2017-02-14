@@ -1,7 +1,7 @@
 ---
 title: Configuration
 layout: doc_page.html
-order: 5
+order: 2
 ---
 
 # El fichero de configuración piscosour.json

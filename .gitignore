@@ -32,3 +32,4 @@ test-reports
 
 # pisco cache file
 scullion.json
+dist

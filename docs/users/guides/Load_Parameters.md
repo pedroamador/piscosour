@@ -1,11 +1,12 @@
 ---
 title: Load Parameters
 layout: doc_page.html
+order: 1
 ---
 
-# Lectura de parámetros desde un shot
+# Lectura de parámetros desde un step
 
-Todos los parametros que recibimos en un shot están centralizados en **this.params**. A contiuación se enumeran los métodos disponibles para la introducción de parámetros en la ejecución de pisco o de sus recetas.
+Todos los parametros que recibimos en un step están centralizados en **this.params**. A contiuación se enumeran los métodos disponibles para la introducción de parámetros en la ejecución de pisco o de sus recetas.
 
 ## (1) Opción en la línea de comando.
 
@@ -40,7 +41,7 @@ Este fichero puede estar:
 
 La definición de los parámetros incluye estos ámbitos (scopes):
 
-**Común para todos los straws que se ejecuten y por consiguiente para todos los shots contenidos:**
+**Común para todos los flows que se ejecuten y por consiguiente para todos los steps contenidos:**
 
 ```js
 {
@@ -52,12 +53,12 @@ La definición de los parámetros incluye estos ámbitos (scopes):
 }
 ```
 
-**Común para todos los shots de un straw:** ("validate" es el nombre del straw)
+**Común para todos los steps de un flow:** ("validate" es el nombre del flow)
 
 ```js
 {
     [...]
-    "straws" : {
+    "flows" : {
         "validate" : {
             "params" : {
                 "workingDir": "workspace"
@@ -68,12 +69,12 @@ La definición de los parámetros incluye estos ámbitos (scopes):
 }
 ```
 
-**Común para todos los repoTypes de un shot:** ("install" es el nombre del shot)
+**Común para todos los repoTypes de un step:** ("install" es el nombre del step)
 
 ```js
 {
     [...]
-    "shots" : {
+    "steps" : {
         "install" : {
             "params" : {
                 "workingDir": "workspace"
@@ -84,12 +85,12 @@ La definición de los parámetros incluye estos ámbitos (scopes):
 }
 ```
 
-**Específico para un shot y para un repoType dado:** ("component" es el repoType)
+**Específico para un step y para un repoType dado:** ("component" es el repoType)
 
 ```js
 {
     [...]
-    "shots" : {
+    "steps" : {
         "install" : {
             "component" : {
                 "params" : {
@@ -107,38 +108,38 @@ Todas estas opciones acabarán con el parámetro this.params.workingDir="workspa
 ### Prioridad:
 
 - **1** fichero .piscosour/piscosour.json al mismo nivel de la ejecución del comando.
-    - **1.1** Específico para un shot y para un repoType dado.
-    - **1.2** Común para todos los repoTypes de un shot.
-    - **1.3** Común para todos los shots de un straw.
-    - **1.4** Común para todos los straws.
+    - **1.1** Específico para un step y para un repoType dado.
+    - **1.2** Común para todos los repoTypes de un step.
+    - **1.3** Común para todos los steps de un flow.
+    - **1.4** Común para todos los flows.
 - **2** piscosour.json de la receta.
     - (el mismo que el anterior)
 
 NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
 
-## (3) Configuración en el fichero straw.json
+## (3) Configuración en el fichero flow.json
 
-Este fichero se encuentra en la receta en [recipeRoot]/straws/[recipeName]/straw.json
+Este fichero se encuentra en la receta en [recipeRoot]/flows/[recipeName]/flow.json
 
-**Común para todos los shots del straw**
+**Común para todos los steps del flow**
 
 ```js
 {
     "params": {
         "workingDir": "workspace"
     },
-    "shots" : {
+    "steps" : {
         [...]
     }
 }
 ```
 
-**Común para todos los repoTypes de un shot** ("install" es el nombre del shot)
+**Común para todos los repoTypes de un step** ("install" es el nombre del step)
 
 ```js
 {
     "params": {},
-    "shots" : {
+    "steps" : {
         "install" : {
             "params" : {
                 "workingDir": "workspace"
@@ -148,12 +149,12 @@ Este fichero se encuentra en la receta en [recipeRoot]/straws/[recipeName]/straw
 }
 ```
 
-**Específico para un shot y para un repoType dado** ("component" es el repoType)
+**Específico para un step y para un repoType dado** ("component" es el repoType)
 
 ```js
 {
     "params": {},
-    "shots" : {
+    "steps" : {
         "install" : {
             "component" : {
                 "params" : {
@@ -169,19 +170,19 @@ Todas estas opciones acabarán con el parámetro this.params.workingDir="workspa
 
 ### Prioridad:
 
-- **1** Específico para un shot y para un repoType dado.
-- **2** Común para todos los repoTypes de un shot.
-- **3** Común para todos los shots de un straw.
+- **1** Específico para un step y para un repoType dado.
+- **2** Común para todos los repoTypes de un step.
+- **3** Común para todos los steps de un flow.
 
 NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
 
-## (4) Configuración en el fichero params.json de un shot
+## (4) Configuración en el fichero params.json de un step
 
 Existen dos localizaciones para este fichero:
 
-**Común para todos los repoTypes del shot** ("install" es el nombre del shot)
+**Común para todos los repoTypes del step** ("install" es el nombre del step)
 
-Este fichero se encuentra en la receta en [recipeRoot]/shots/[shotName]/params.json
+Este fichero se encuentra en la receta en [recipeRoot]/steps/[stepName]/params.json
 
 ```js
 {
@@ -191,7 +192,7 @@ Este fichero se encuentra en la receta en [recipeRoot]/shots/[shotName]/params.j
 
 **Específico para un repoType dado** ("component" es el repoType)
 
-Este fichero se encuentra en la receta en [recipeRoot]/shots/[shotName]/[repoType]/params.json
+Este fichero se encuentra en la receta en [recipeRoot]/steps/[stepName]/[repoType]/params.json
 
 ```js
 {
@@ -205,7 +206,7 @@ El parámetro será this.params.workingDir="workspace".
 ### Prioridad:
 
 - **1** Específico para un repoType dado.
-- **2** Común para todos los repoTypes del shot.
+- **2** Común para todos los repoTypes del step.
 
 NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
 
@@ -235,7 +236,7 @@ Se han añadido dos parámetros más a la configuración de inquirer:
 
 ### Asignar funciones a los parámetros check, validate y choices.
 
-Dado que params.json es un fichero json y no está permitido escribir código javascript se ha habilitado una forma de asignar funciones propias del shot a los parámetros check, validate y choices de inquirer.
+Dado que params.json es un fichero json y no está permitido escribir código javascript se ha habilitado una forma de asignar funciones propias del step a los parámetros check, validate y choices de inquirer.
 
 ```js
   "prompts": [
@@ -251,11 +252,11 @@ Dado que params.json es un fichero json y no está permitido escribir código ja
 
 mediante "#...nombre de la función" le decimos a piscosour que función tiene que ejecutar inquirer al cargar la variable.
 
-Ahora en el shot simplemente definimos:
+Ahora en el step simplemente definimos:
 
 ```js
 module.exports = {
-    description : "Adding shot to a straw",
+    description : "Adding step to a flow",
 
     [...]
 
@@ -271,7 +272,7 @@ module.exports = {
 
 El parámetro será this.params.workingDir="workspace".
 
-Creando la lista prompts en **params.json** automáticamente el shot preguntará al usuario siempre que el parámetro no venga informado.
+Creando la lista prompts en **params.json** automáticamente el step preguntará al usuario siempre que el parámetro no venga informado.
 
 
 ### Prioridad:
@@ -282,8 +283,8 @@ Creando la lista prompts en **params.json** automáticamente el shot preguntará
 - 2 - Variable de entorno especificada en el parámetro env del prompt.
 - 3 - Configuración del fichero .piscosour/piscosour.json.
 - 4 - Configuración del fichero piscosour.json de la receta.
-- 5 - Configuración del fichero straw.json de la receta. ([recipeRoot]/straws/[recipeName]/straw.json)
-- 6 - Configuración del fichero params.json de la receta. ([recipeRoot]/shots/[shotName]/[repoType]/params.json)
+- 5 - Configuración del fichero flow.json de la receta. ([recipeRoot]/flows/[recipeName]/flow.json)
+- 6 - Configuración del fichero params.json de la receta. ([recipeRoot]/steps/[stepName]/[repoType]/params.json)
 - 7 - valor del parámetro "value" dentro de un prompt.
 - 8 - Pregunta al usuario si todas las enteriores no vienen informadas.
 

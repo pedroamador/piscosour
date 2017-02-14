@@ -1,15 +1,15 @@
 ---
 title: Plugins
 layout: doc_page.html
-order: 9
+order: 6
 ---
 
 # ¿Qué es un plugin de pisco?
 
-Es un prototipo que sirve para compartir funcionalidad de manera transversal entre shots y straws. El prototipo plugin actúa de dos maneras claramente diferenciadas.
+Es un prototipo que sirve para compartir funcionalidad de manera transversal entre steps y flows. El prototipo plugin actúa de dos maneras claramente diferenciadas.
 
- 1. Como hook (o interceptor previo) en cada una de las fases del shot donde esté configurado.
- 2. Como repositorio de addons (métodos añadidos al prototipo shot) que añaden funcionalidad al objeto shot de manera transparente.
+ 1. Como hook (o interceptor previo) en cada una de las fases del step donde esté configurado.
+ 2. Como repositorio de addons (métodos añadidos al prototipo step) que añaden funcionalidad al objeto step de manera transparente.
 
 este es el especto de un plugin tipo:
 
@@ -21,9 +21,9 @@ module.exports = {
 
     // ---- HOOKS ----
 
-    check : function(shot){
+    check : function(step){
         this.logger.info("---------PLUGIN TEST--------");
-        shot.test_pluginAddon("Ejemplo");
+        step.test_pluginAddon("Ejemplo");
     },
 
     // ---- ADDONS ----
@@ -38,17 +38,17 @@ module.exports = {
 ```
 
 ## HOOKS
- - En los hooks **this** será la referencia a la instancia shot que se está ejecutando en ese momento, por lo tanto con todas las propiedades y funciones del shot.
+ - En los hooks **this** será la referencia a la instancia step que se está ejecutando en ese momento, por lo tanto con todas las propiedades y funciones del step.
  - Las functions de los hooks deberán tener el mismo nombre que la fase (stage) que van a preceder.
  - Deberán devolver una Promesa o undefined. No está permitido hacer return de otro tipo de valor.
 
 ## ADDONS
- - Los addons son métodos que se añaden al prototipo Shot por lo tanto van a poderse ejecutar desde cualquier referencia a este prototipo.
- - Dentro de una función addon **this** hace referencia al shot donde se está ejecutando, será una referencia a la instancia ejecutandose en ese momento con todo completamente cargado.
- - **ATENCIÓN: Los plugins añaden funciones al prototype Shot**. Para no sobreescribir funciones sensibles de Shot utilizar uno de estos dos métodos:
+ - Los addons son métodos que se añaden al prototipo step por lo tanto van a poderse ejecutar desde cualquier referencia a este prototipo.
+ - Dentro de una función addon **this** hace referencia al step donde se está ejecutando, será una referencia a la instancia ejecutandose en ese momento con todo completamente cargado.
+ - **ATENCIÓN: Los plugins añaden funciones al prototype step**. Para no sobreescribir funciones sensibles de step utilizar uno de estos dos métodos:
 
   1. (Recomendado): Prefijar las funciones añadidas con el nombre del plugin. En nuestro ejemplo será **test**.
-  2. Crear un espacio de nombres: Esta solución pierde la referencia al **this** del propio shot y habría que pasar el shot al llamar a la función. En nuestro ejemplo:
+  2. Crear un espacio de nombres: Esta solución pierde la referencia al **this** del propio step y habría que pasar el step al llamar a la función. En nuestro ejemplo:
 
   **plugin.js:**
 
@@ -69,8 +69,8 @@ module.exports = {
 
     addons : {
         test : {
-            pluginAddon: function (shot,message) {
-                shot.logger.info("Test addon executed", message);
+            pluginAddon: function (step,message) {
+                step.logger.info("Test addon executed", message);
             }
         }
     }
@@ -97,9 +97,9 @@ Usar un plugin es muy sencillo, sigue estos pasos:
 
     npm install mis-plugins --save
 
-2. Define el nombre del plugin en cualquiera de los "scopes" pisco piscosour.json, straw.json, params.json [Ver definición de parámetros](Load_Parameters.md).
+2. Define el nombre del plugin en cualquiera de los "scopes" pisco piscosour.json, flow.json, params.json [Ver definición de parámetros](Load_Parameters.md).
 
-en el caso de piscosour.json y straw.json
+en el caso de piscosour.json y flow.json
 
 ```js
 [....]
@@ -117,15 +117,15 @@ en el caso de params.json
 }
 ```
 
-3. Listo!. El plugin ejecutará todos los hooks que tenga asociados y el shot tendrá disponible todos los addons que se hayan definido.
+3. Listo!. El plugin ejecutará todos los hooks que tenga asociados y el step tendrá disponible todos los addons que se hayan definido.
 
- En nuestro ejemplo este sería el código del shot que usa el plugin test:
+ En nuestro ejemplo este sería el código del step que usa el plugin test:
 
 ```js
  'use strict';
 
  module.exports = {
-     description : "Plugins test shot",
+     description : "Plugins test step",
 
      config : function(resolve){
          this.logger.info("#magenta","config","Preparing params for main execution");
@@ -133,7 +133,7 @@ en el caso de params.json
 
      run : function(resolve){
          this.logger.info("#magenta","run","Run main execution");
-         shot.test_pluginAddon("our example!!");
+         step.test_pluginAddon("our example!!");
      },
 
      prove : function(resolve){
@@ -147,6 +147,6 @@ en el caso de params.json
 
 ```
 
-Al ejecutar el shot aparecerá nuesto mensaje:
+Al ejecutar el step aparecerá nuesto mensaje:
 
 ![First plugin execution](images/plugins1.png)
