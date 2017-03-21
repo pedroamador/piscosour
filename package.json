@@ -1,7 +1,7 @@
 {
   "name": "piscosour",
-  "version": "1.0.0-alpha.46",
-  "description": "Get all your devops tools wrapped-up!",
+  "version": "1.0.3-beta.0",
+  "description": "The adhesive orchestrator",
   "main": "index.js",
   "homepage": "https://github.com/cellsjs/piscosour",
   "repository": {
@@ -13,8 +13,8 @@
     "email": "cells.tooling.group@bbva.com"
   },
   "author": {
-    "email": "sbonacho@gmail.com",
-    "name": "Santiago"
+    "email": "cells.tooling.group@bbva.com",
+    "name": "QPA"
   },
   "license": "ISC",
   "keywords": [
@@ -39,8 +39,7 @@
     "pisco": "bin/pisco.js"
   },
   "scripts": {
-    "deps": "npm install",
-    "postinstall": "node bin/pisco.js -w"
+    "deps": "npm install"
   },
   "dependencies": {
     "async": "^2.1.2",
@@ -52,6 +51,8 @@
     "marked-terminal": "^1.6.1",
     "moment": "^2.10.6",
     "nopt": "^3.0.6",
+    "pisco-requirements": "*",
+    "pisco-contexts": "^0.2.0",
     "pisco-site-template-basic": "^0.2.0",
     "rimraf": "^2.5.2",
     "semver": "^5.1.0",
