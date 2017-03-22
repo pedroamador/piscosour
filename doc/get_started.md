@@ -10,16 +10,17 @@ $ npm install -g piscosour
 
 Please follow these instructions if you want to create your first recipe:
 
-1. [Install & execute `recipe:create`](#install)
-2. [Fill the questions](#fill)
-3. [Wait until completed](#wait)
-4. [Add a context `world`](#add-context)
-5. [Add the step `sayHello`](#add-step)
-6. [Add a flow `hello`](#add-flow)
-7. [Launch the new command `recipe-sample`](#launch)
+1. [Create a new recipe](#install)
+2. [Add a context `world`](#add-context)
+3. [Add the step `sayHello`](#add-step)
+4. [Add a flow `hello`](#add-flow)
+5. [Launch the new command `recipe-sample`](#launch)
+
+## <a name="install"></a>1. Create a new recipe
+
+Launch `pisco` and select `recipe:create` option.
 
 ```
-$ npm install -g piscosour
 $ pisco
 ? What's up!? (Use arrow keys)
 ❯ recipe:create (Create new recipe from scratch) 
@@ -28,18 +29,16 @@ $ pisco
   Exit 
 ```
 
-And select `recipe:create` option.
-
-Or execute directly the flow `recipe:create` after the installation.
+Or execute directly the flow `recipe:create`.
 
 ```
-$ npm install -g piscosour
 $ pisco recipe:create
 ```
 
-## <a name="fill"></a>2. Fill the questions
+If it is the first time to execute `recipe:create`, wait until the npm package called `pisco-recipe-generator` will be installed.
 
 Then you must fill the questions inquired:
+
 - Name: `pisco-sample`
 - A short description of your recipe: `My first recipe`
 - Command Line name: `recipe-sample`
@@ -53,8 +52,6 @@ Then you must fill the questions inquired:
 ? Recipe command line name recipe-sample
 ? Recipe Continuous Integration File none
 ```
-
-## <a name="wait"></a>3. Wait until completed
 
 Next it will generate a new recipe called `pisco-sample`
 
@@ -123,13 +120,13 @@ drwxr-xr-x    3 pisco  staff   test
 -rw-r--r--    1 pisco  staff   test/index.js
 ```
 
-This receipt is empty, to make it run needs a `context`, a `step` and a `flow`. Continue with then next instructions:
+This receipt is npm package, empty, to make it run needs a `context`, a `step` and a `flow`.
 
-## <a name="add-context"></a>4. Add a context `world`
+## <a name="add-context"></a>2. Add a context `world`
 
 The context defines **where** could a step be executed. In this sample, the step `sayHello` just runs inside a folder called `world`.
 
-So, in the new folder `pisco-sample`, add a flow launching `pisco` and the action `add-context`
+So, in the new folder `pisco-sample`, add a flow launching `pisco` and the action `add-context`.
 
 ```
 $ pisco    
@@ -210,7 +207,7 @@ The `info.md` file is just to explain the context:
 Check if current working directory is world
 ```
 
-## <a name="add-step"></a>5. Add the step `sayHello`
+## <a name="add-step"></a>3. Add the step `sayHello`
 
 To create the step, please go to the root of the receipt and execute the command `pisco add-step`:
 
@@ -276,7 +273,7 @@ module.exports = {
 };
 ```
 
-## <a name="add-flow"></a>6. Add a flow `hello`
+## <a name="add-flow"></a>4. Add a flow `hello`
 
 Finally, add a flow with the step `sayHello`. So, please, placed inside the folder `pisco-sample`, add a flow launching `pisco` and the action `add-flow`
 
@@ -339,7 +336,7 @@ The configuration of the flow is in the `config.json` file:
 }
 ```
 
-## <a name="launch"></a>7. Launch the new command `recipe-sample`
+## <a name="launch"></a>5. Launch the new command `recipe-sample`
 
 Done! A new folder called `pisco-sample` has been created.
 
@@ -378,6 +375,3 @@ HELLO WORLD
 [21:04:32] Flow [ hello ] finished - 024 ms
 [21:04:32] Total time - 026 ms
 ```
-
-
-
