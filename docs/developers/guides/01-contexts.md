@@ -31,14 +31,14 @@ The `config.js` file has the definition of the context:
 
 The contexts are described by two fields:
 
-### `name`
+### `name` property
 
 A short name of the context, it must be descriptive and unique.
 
 - It is mandatory
 - String type expected
 
-### `description`
+### `description` property
 
 It is a short description about the context.
 

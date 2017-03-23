@@ -40,21 +40,21 @@ Example:
 
 The `config.js` file could configure the following fields:
 
-### `name`
+### `name` property
 
 Short name of the step, it must be descriptive and unique.
 
 - It is mandatory
 - String type expected
 
-### `description`
+### `description` property
 
 It is a short description about the step.
 
 - It is mandatory
 - String type expected
 
-### `isGenerator`
+### `isGenerator` property
 
 If the steps creates a context, then fill a 'true' value. Otherwise 'false'.
 
@@ -62,7 +62,7 @@ If the steps creates a context, then fill a 'true' value. Otherwise 'false'.
 - The default value is 'false'.
 - Boolean type expected
 
-### `contexts`
+### `contexts` property
 
 Array of contexts which step can be executed.
 
@@ -71,7 +71,7 @@ Array of contexts which step can be executed.
 
 Example: `"contexts": [ "context1", "context2" ]`
 
-### `plugins`
+### `plugins` property
 
 Array of [plugins](./07-plugins.html) injected into the step.
 
@@ -80,7 +80,7 @@ Array of [plugins](./07-plugins.html) injected into the step.
 
 Example: `"plugins": [ "plugin1", "plugin2" ]`
 
-### `prompts`
+### `prompts` property
 
 Array of [inquire prompts](./06-inquire.html) of the step.
 

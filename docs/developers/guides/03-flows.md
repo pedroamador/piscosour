@@ -36,21 +36,21 @@ The `config.js` file has the definition of the flow. A example is:
 
 In the `config.js` file could be configured the following fields:
 
-### `name`
+### `name` property
 
 Short name of the flow, it must be descriptive and unique.
 
 - It is mandatory
 - String type expected
 
-### `description`
+### `description` property
 
 It is a short description about the flow.
 
 - It is mandatory
 - String type expected
 
-### `type`
+### `type` property
 
 Type of the flows
 
@@ -60,7 +60,7 @@ Type of the flows
  1. `normal`: appears in the command list. It is the default value.
  1. `internal`: doesn't appear int command list. It is for an internal purpose.
 
-### `isGenerator`
+### `isGenerator` property
 
 If the steps creates a context, then this flag must be with a 'true' value.
 
@@ -68,7 +68,7 @@ If the steps creates a context, then this flag must be with a 'true' value.
 - The default value is 'false'.
 - Boolean type expected
 
-### `params`
+### `params` property
 
 Others customized paramaters, see [parameters](./05-parameters.html) for more information.
 
@@ -89,7 +89,7 @@ Example:
 }
 ```
 
-### `steps`
+### `steps` property
 
 List of sequential steps in the flow.
 
