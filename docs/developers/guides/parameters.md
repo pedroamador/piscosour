@@ -1,5 +1,5 @@
 ---
-title: Load Parameters
+title: Parameters
 layout: doc_page.html
 order: 4
 ---
