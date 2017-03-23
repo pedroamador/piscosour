@@ -15,6 +15,7 @@ Please follow these instructions if you want to create your first recipe:
 3. [Add the step `sayHello`](#add-step)
 4. [Add a flow `hello`](#add-flow)
 5. [Launch the new command `recipe-sample`](#launch)
+6. [Test it](#test)
 
 ## <a name="install"></a>1. Create a new recipe
 
@@ -376,4 +377,35 @@ HELLO WORLD
 
 [21:04:32] Flow [ hello ] finished - 024 ms
 [21:04:32] Total time - 026 ms
+```
+
+## <a name="test"></a>6. Test it
+
+There is some tests built with [mocha](https://mochajs.org) and [chai](https://chaijs.com), in the folder `test/`.
+
+If you want to run the tests, simply execute:
+
+```sh
+$ npm test
+```
+
+Step will fail until you update `test/step-sayHello.js` with the content:
+
+```javascript
+'use strict';
+/* global define, it, describe, before */
+const expect = require('chai').expect;
+const exec = require('child_process').exec;
+
+describe('::sayHello validation', function() {
+  this.timeout(5000);
+  it('Should \'::sayHello\' works', (done) => {
+    exec('node ../.. ::sayHello', { cwd: 'test/world' }, (error, stdout, stderr) => {
+      expect(error).to.equal(null);
+      expect(stderr).to.equal('');
+      expect(stdout).contain('HELLO WORLD');
+      done();
+    });
+  });
+});
 ```
