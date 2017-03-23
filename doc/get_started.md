@@ -273,6 +273,8 @@ module.exports = {
 };
 ```
 
+Note that with `this.sh` you are able to lauch any command of the operating system.
+
 ## <a name="add-flow"></a>4. Add a flow `hello`
 
 Finally, add a flow with the step `sayHello`. So, please, placed inside the folder `pisco-sample`, add a flow launching `pisco` and the action `add-flow`
