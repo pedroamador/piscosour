@@ -6,7 +6,7 @@ order: 2
 
 # Steps
 
-Steps often belong to an execution [flow](./flows.html), and usually are executed in a [context](./contexts.html).
+Steps often belong to an execution [flow](./03-flows.html), and usually are executed in a [context](./01-contexts.html).
 
 Contexts are implements with three files in the recipe:
 
@@ -20,28 +20,99 @@ Note, it exists a [scaffold generator tool](#scaffold)
 
 ## Configuration
 
-The `config.js` file has the definition of the step. A example is:
+The `config.js` file has the definition of the step.
+
+Example:
 
 ```json
 {
   "name": "sayHello",
   "description": "Say Hello World",
-  "contexts": [
-    "context-name"
+  "isGenerator": false,
+  "contexts": [ "context1", "context2" ],
+  "plugins": [ "plugin1", "plugin2" ],
+  "prompts": {},
+  "param1": "value1",
+  "param2": 2,
+  "param3": { "object1": "value" }
+}
+```
+
+The `config.js` file could configure the following fields:
+
+### `name`
+
+Short name of the step, it must be descriptive and unique.
+
+- It is mandatory
+- String type expected
+
+### `description`
+
+It is a short description about the step.
+
+- It is mandatory
+- String type expected
+
+### `isGenerator`
+
+If the steps creates a context, then fill a 'true' value. Otherwise 'false'.
+
+- It is optional
+- The default value is 'false'.
+- Boolean type expected
+
+### `contexts`
+
+Array of contexts which step can be executed.
+
+- It is mandatory
+- Array of string expected
+
+Example: `"contexts": [ "context1", "context2" ]`
+
+### `plugins`
+
+Array of [plugins](./07-plugins.html) injected into the step.
+
+- It is optional
+- The default value is an empty array. `"plugins": []`
+
+Example: `"plugins": [ "plugin1", "plugin2" ]`
+
+### `prompts`
+
+Array of [inquire prompts](./06-inquire.html) of the step.
+
+- It is optional
+- The default vulue is an empty array. `"prompts": []`
+
+Example:
+
+```json
+{
+  "prompts": [
+    {
+      "type": "input",
+      "name": "param1",
+      "required": true,
+      "default": "value1",
+      "message": "Write the param1"
+    }, {
+      "type": "confirm",
+      "name": "param2",
+      "required": true,
+      "message": "Write the param2"
+    }
   ]
 }
 ```
 
-The `config.js` can configure the following fields:
+See [inquire prompts](./06-inquire.html) for more information.
 
-- `name`: short name of the step, it must be a descriptive and unique.
-- `description`: is a short description about the step.
-- `contexts`: array of contexts which step can be executed, example: `"contexts": [ "context1", "context2" ]`
-- `isGenerator`: if the steps creates a context, then this flag must be with a 'true' value.
-- `prompts`: object with the list of [inquire prompts](./inquire.html) of the step.
-- `plugins`: object with the list of [plugins](./plugins.html) injected into the step.
-- `requirements`: object with the list of [requirements](./requirements.html)p.
-- And others user defined paramaters, see [parameters](./parameters.html) for more information.
+### Other customized params
+
+And others customized paramaters, see [parameters](./05-parameters.html) for more information.
 
 ## Implementation
 
@@ -87,7 +158,7 @@ The stages of a step are used to:
 1. `notify`: notify the end of the shot to someone or something.
 1. `emit`: emit the result of the step to other steps. Allow communication between steps.
 
-Please see [stages of a step](./stages.html) for more information. And check [advanced step feature](./steps-advanced.html) to help you how to implement those stages.
+Please see [stages of a step](./04-stages.html) for more information. And check [advanced step feature](./09-steps-advanced.html) to help you how to implement those stages.
 
 ## Documentation
 

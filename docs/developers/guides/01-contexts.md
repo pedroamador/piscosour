@@ -31,8 +31,19 @@ The `config.js` file has the definition of the context:
 
 The contexts are described by two fields:
 
-- `name`: short name of the context, it must be a descriptive and unique.
-- `description`: is a short description about the context.
+### `name`
+
+A short name of the context, it must be descriptive and unique.
+
+- It is mandatory
+- String type expected
+
+### `description`
+
+It is a short description about the context.
+
+- It is mandatory
+- String type expected
 
 ## Implementation
 

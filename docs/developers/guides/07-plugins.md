@@ -1,7 +1,7 @@
 ---
 title: Plugins
 layout: doc_page.html
-order: 6
+order: 7
 ---
 
 # ¿Qué es un plugin de pisco?

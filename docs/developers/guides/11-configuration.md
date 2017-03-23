@@ -1,7 +1,7 @@
 ---
 title: Configuration
 layout: doc_page.html
-order: 5
+order: 11
 ---
 
 # El fichero de configuración piscosour.json
@@ -17,7 +17,7 @@ El módulo Piscosour tiene un fichero de configuración más completo, que podr�
 
 Este es el aspecto de piscosour.json del modulo piscosour
 
-```js
+```json
 {
   "cmd" : "pisco",
   "params" : {
@@ -47,7 +47,7 @@ Este es el aspecto de piscosour.json del modulo piscosour
 
 Las recetas solo deberán informar de la configuración que quieran añadir o sobreescribir. Este es el fichero piscosour.json tipo de una receta:
 
-```js
+```json
 {
     "cmd": "cells",
     "repoTypes": [

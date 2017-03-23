@@ -1,7 +1,7 @@
 ---
 title: Google Analytics Integration
 layout: doc_page.html
-order: 7
+order: 13
 ---
 
 # Google Analytics Integration
