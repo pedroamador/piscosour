@@ -1,158 +1,379 @@
----
-title: Getting started
-layout: doc_page.html
-order: 1
----
+# Installation
 
-# Instalación de piscosour con npm
+Install with [npm](https://npmjs.org) globally
 
-La recomendación es instalar pisco de manera global para poder tener acceso al comando pisco desde cualquier lugar. Instalar piscosour como un comando global. (-g)
+```bash
+$ npm install -g piscosour
+```
 
-    npm install -g piscosour
+# Getting Started
 
-# Crear una receta en 5 minutos
-(Receta -> Ejecutable envoltorio)
+Please follow these instructions if you want to create your first recipe:
 
-Una vez instalada la herramienta ejecuta el comando pisco para ver la ayuda general.
+1. [Create a new recipe](#install)
+2. [Add a context `world`](#add-context)
+3. [Add the step `sayHello`](#add-step)
+4. [Add a flow `hello`](#add-flow)
+5. [Launch the new command `recipe-sample`](#launch)
 
-    pisco
+## <a name="install"></a>1. Create a new recipe
 
-![First execution: Show help](images/started1.png)
+Launch `pisco` and select `recipe:create` option.
 
-Sitúate en tu directorio de trabajo y crea tu primera receta. Una receta es un contenedor de shots (pasos) y straws (flujos).
+```
+$ pisco
+? What's up!? (Use arrow keys)
+❯ recipe:create (Create new recipe from scratch) 
+  More commands 
+  Get help 
+  Exit 
+```
 
-    mkdir demo
-    cd demo
-    pisco create
+Or execute directly the flow `recipe:create`.
 
-( "pisco create" es un straw de pisco, esto es, un flujo de pasos (shots) que hacen una tarea, verás la salida de la ejecución de cada shot... más tarde te explicaremos que significa cada mensaje, ... es fácil imaginarse que está haciendo leyendo cada uno de los mensajes, pero más adelante verémos más detalle...)  
+```
+$ pisco recipe:create
+```
 
-![Execution of pisco create command](images/started2.png)
+If it is the first time to execute `recipe:create`, wait until the npm package called `pisco-recipe-generator` will be installed.
 
-- Pisco te preguntará por el nombre de la receta que quieres crear. Este será el nombre de tu paquete npm que usarás para compartir la funcionalidad y las herramientas que envuelvas. Introduce el nombre que más te guste.
-- Deberás introducir el comando que quieres usar para hacer correr los "straws" (flujos) que vas a introducir en este módulo.
-- También deberás introducir una breve descripción para tu módulo.
+Then you must fill the questions inquired:
 
-![Pisco create questions](images/started3.png)
+- Name: `pisco-sample`
+- A short description of your recipe: `My first recipe`
+- Command Line name: `recipe-sample`
+- An included build integration file: `none`
 
-Mientras pisco genera tu primera receta usando un generator de yeoman. Te explicamos brevemente lo que está pasando ante tus ojos. (no te preocupes, más adelante podrás profundizar más).
+```
+ Starting | Create a recipe scaffold | [ recipe::recipe-create ] 
 
-"Pisco create" también es un comando envuelto de pisco que está ejecutando otras herramientas. Cada uno de los mensajes que ves aparecer es la ejecución de un shot (paso). Concretamente este comando conlleva la ejecución de estos pasos.
+? Recipe name pisco-sample
+? Recipe description My first recipe
+? Recipe command line name recipe-sample
+? Recipe Continuous Integration File none
+```
 
-- system: Comprueba que tu sistema es compatible con la ejecución de piscosour
-- npm: Comprueba que tienes instalado todos los módulos npm necesarios (yeoman y el generator-pisco-recipe)
-- scaffolding: Hace las preguntas y llama a yeoman para generar el esqueleto del módulo.
+Next it will generate a new recipe called `pisco-sample`
 
-![Finish! Pisco create done!](images/started4.png)
+```
+[17:23:32] run stage running...
+[17:23:32] 
+                                   
+                                        &  &&%%%%%%%%%%%%%%%  
+                                    /*  &                   
+        .%&&&&                     &  &                     
+     &&    &&/   %&(              &  &                      
+   &&  .  &      &  &           &  .,                       
+  &/,  #     &  (  & &%        &  &                         
+ && #    & &  &    /  &       %  &                          
+ & %     &&& &&,      &&&&&&&  &                            
+ &/ & &&  &.&&  ..& &    &  &    &,                         
+  & &   *  % * &      &&&&&&&&&&&   &                       
+  ,&  /      (   &/ .&             ,                        
+    && %.%&   & &  &&              &                        
+      &&(.     &&&                 &                        
+            &                      &                        
+            &                      &                        
+           (                        %                       
+           &                        &                       
+          &                          &                      
+          &                          &                      
+         ./         PISCOSOUR        ./                     
+         &                            &                     
+         &                            &                     
+          (                          %.                     
+          &                          &                      
+           &                        %                       
+            &&                    #&                        
+              &&&              %%&                          
+                (&&&&&&&&&&&&&%&                            
+                   &        %.                              
+                     &    %                                 
+                     *    &                                 
+                      ,                                     
+                      &  *                                  
+                      %  ,                                  
+                                                            
+                     &    &                                 
+                    &  ..  &                                
+               %.               &                           
+               &&              &&                           
+                  &&&&&&&&&&&&                              
+[17:23:33] 
 
-Listo! ya tienes tu primer ejecutable de pisco creado! pruebalo
+ Finished | Create a recipe scaffold - 34 s 276 ms 
 
-    node bin/pisco.js
+[17:23:33] Flow [ create ] finished - 34 s 418 ms
+[17:23:33] Total time - 34 s 420 ms
+```
 
-![Testing pisco command](images/started5.png)
+A new folder `pisco-sample` has been created with the following content:
 
-## Añadir comandos a nuestra receta
+```
+-rw-r--r--    1 pisco  staff   .gitignore
+-rw-r--r--    1 pisco  staff   README.md
+drwxr-xr-x    3 pisco  staff   bin
+-rwxr-xr-x    1 pisco  staff   bin/pisco.js
+-rw-r--r--    1 pisco  staff   package.json
+-rw-r--r--    1 pisco  staff   piscosour.json
+drwxr-xr-x    3 pisco  staff   test
+-rw-r--r--    1 pisco  staff   test/index.js
+```
 
-Una vez creada nuestra receta nos situamos dentro del directorio que hemos creado.
+This receipt is npm package, empty, to make it run needs a `context`, a `step` and a `flow`.
 
-    cd example-wrapper
-    pisco config
+## <a name="add-context"></a>2. Add a context `world`
 
-pisco config nos ayuda a configurar nuestra receta.
+The context defines **where** could a step be executed. In this sample, the step `sayHello` just runs inside a folder called `world`.
 
-![configuring our recipe](images/started6.png)
+So, in the new folder `pisco-sample`, add a flow launching `pisco` and the action `add-context`.
 
-1. Nos pregunta si queremos establecer un nuevo tipo de repositorio por defecto. En nuestro ejemplo decimos **"yes"**
-2. Nos pregunta el tipo de repositorio. El tipo de repositorio es el lugar donde se va a ejecutar el comando pisco. Normalmente se ejecutará en la raiz de un repositorio git. [Ver que es piscosour para el glosario de términos](what_is_piscosour.md).
-Por ejemplo pondremos **"component"**  
-3. Pregunta por el nombre del shot que queremos crear. Por ejemplo pondremos: **"show"**
-4. El tipo de repositorio sobre el que va a actuar nuestro comando. Por ejemplo pondremos **"component"**
-5. Nos pregunta si queremos añadir este shot (paso) a una nueva straw (flujo). **"yes"**
-6. Nos pregunta por el comando del straw. Será el comando usado para lanzar nuestra straw. **"demo"**
-7. Establecemos el nombre corto del comando será el que aparezca en la ayuda del comando. **"demo execution"**
-8. Nos pide una descripción para el comando. **"this is a demo execution"**
-9. Seleccionar el tipo de straw que vamos a crear. **"normal"**
+```
+$ pisco    
+? What's up!? Choose an action for a recipe 
+❯ recipe:add-context (Add a context to a piscosour recipe) 
+  recipe:add-flow (Add a flow to a piscosour recipe) 
+  recipe:add-step (Add a step to a piscosour recipe) 
+  More commands 
+  Get help 
+  Exit 
+```
 
-Listo! ya tenemos nuestro nuevo comando añadido! Pruebalo.
+Then fill the parameters needed to create the flow:
+- Name of the context: world
+- Description for the context: Check if current working directory is world
 
-    node bin/pisco.js
+```
+? What's up!? Choose an action for a recipe recipe:add-context (Add a context to a piscosour recipe)
+[19:21:27] Execution contexts: [ recipe ]
+[19:21:27] Starting flow: [ add-context ], steps: [ add-context ]
+[19:21:27] 
 
-ahora aparecerá en la ayuda de nuestra receta el nuevo comando.
+ Starting | Generator to add a new context | [ recipe::add-context ] 
 
-![help is updated](images/started8.png)
+? Name of the context world
+? Description for the context Check if current working directory is world
+[19:31:14] run stage running...
+[19:31:14] 
 
-    node bin/pisco.js demo
+ Finished | Generator to add a new context - 09 m 46 s 996 ms 
 
-Ejecutará el nuevo straw que hemos creado con un solo shot
+[19:31:14] Flow [ add-context ] finished - 09 m 47 s 172 ms
+[19:31:14] Total time - 09 m 47 s 174 ms
+```
 
-![first shot execution](images/started9.png)
+And a new folder called `contexts/world` has been created.
 
-## Echemos un vistazo a lo que hemos creado.
+```
+-rwxr-xr-x    1 pisco  staff   contexts/world/config.js
+-rwxr-xr-x    1 pisco  staff   contexts/world/index.js
+-rwxr-xr-x    1 pisco  staff   contexts/world/info.md
+```
 
-Se ha generado un módulo node con su package.json y los archivos fundamentales de pisco.
+The `config.js` file has the configuration of the context:
 
-Este es el árbol resultante.
-
-![recipe file tree](images/started7.png)
-
-package.json:
-```js
+```json
 {
-  "name": "example-wrapper",
-  "version": "0.0.1",
-  "description": "This is my first piscosour wrapper example",
-  "main": "bin/pisco.js",
-  "scripts": {
-    "deps": "npm install"
-  },
-  "keywords": [
-    "piscosour-recipe"
-  ],
-  "license": "ISC",
-  "preferGlobal": true,
-  "bin": {
-    "example-tool": "bin/pisco.js"
-  },
-  "dependencies": {
-    "piscosour": "~0.1.0"
-  },
-  "engines": {
-    "node": ">=4.0.0"
+  "name": "world",
+  "description": "Check if current working directory is world"
+}
+```
+
+The `index.js` file implements a `checks` function which implements the context. Please, replace it with the following content:
+
+```javascript
+'use strict';
+const path = require('path');
+const process = require('process');
+
+const _isWorldFolder = function() {
+  let dir = process.cwd().split(path.sep);
+
+  return dir[dir.length - 1] === 'world';
+};
+
+module.exports = {
+  check() {
+    return _isWorldFolder();
+  }
+};
+```
+
+The `info.md` file is just to explain the context:
+
+```markdown
+# Context world
+
+Check if current working directory is world
+```
+
+## <a name="add-step"></a>3. Add the step `sayHello`
+
+To create the step, please go to the root of the receipt and execute the command `pisco add-step`:
+
+```
+$ pisco    
+? What's up!? Choose an action for a recipe 
+  recipe:add-context (Add a context to a piscosour recipe) 
+  recipe:add-flow (Add a flow to a piscosour recipe) 
+❯ recipe:add-step (Add a step to a piscosour recipe) 
+  More commands 
+  Get help 
+  Exit 
+```
+
+And fill the parameters needed to create the flow:
+- Name of the step: `sayHello`
+- Description for the step: `Say Hello World`
+- Is a generator: `No`
+- List of contexts separated by commas: `world`
+- List of plugins separated by commas: ***leave empty***
+
+```
+$ pisco
+? What's up!? Choose an action for a recipe recipe:add-step (Add a step to a piscosour recipe)
+[20:38:18] Execution contexts: [ recipe ]
+[20:38:18] Starting flow: [ add-step ], steps: [ add-step ]
+[20:38:18] 
+
+ Starting | Generator to add a new step | [ recipe::add-step ] 
+
+? Name of the step sayHello
+? Description for the step Say Hello World
+? Is a generator? (if the step creates the context) No
+? List of contexts separated by commas (recipe, app, component, ...) world
+? List of plugins separated by commas (plugin1, plugin2) 
+[20:39:16] run stage running...
+[20:39:17] 
+
+ Finished | Generator to add a new step - 58 s 643 ms 
+
+[20:39:17] Flow [ add-step ] finished - 58 s 785 ms
+[20:39:17] Total time - 58 s 787 ms
+```
+
+Then, there are new files:
+
+```
+-rw-r--r--  1 pisco  staff  ./steps/sayHello/config.json
+-rw-r--r--  1 pisco  staff  ./steps/sayHello/index.js
+-rw-r--r--  1 pisco  staff  ./steps/sayHello/info.md
+```
+
+The `config.json` file has the configuration, `info.md` explain and document the step, and `index.js` has the implementation of the step, please replace it with:
+
+```javascript
+'use strict';
+
+module.exports = {
+  run: function(ok, ko) {
+    this.sh('echo HELLO WORLD', ko, true);
+    return;
+  }
+};
+```
+
+Note that with `this.sh` you are able to lauch any command of the operating system.
+
+## <a name="add-flow"></a>4. Add a flow `hello`
+
+Finally, add a flow with the step `sayHello`. So, please, placed inside the folder `pisco-sample`, add a flow launching `pisco` and the action `add-flow`
+
+```
+$ pisco    
+? What's up!? Choose an action for a recipe 
+  recipe:add-context (Add a context to a piscosour recipe) 
+❯ recipe:add-flow (Add a flow to a piscosour recipe) 
+  recipe:add-step (Add a step to a piscosour recipe) 
+  More commands 
+  Get help 
+  Exit 
+```
+
+And fill the parameters needed to create the flow:
+- Name of the flow: `hello`
+- Description for the flow: `Hello World sample flow`
+- Is a generator: `No`
+- List of steps separated by commas: `sayHello`
+
+```
+$ pisco
+? What's up!? Choose an action for a recipe recipe:add-flow (Add a flow to a piscosour recipe)
+[11:25:32] Execution contexts: [ recipe ]
+[11:25:32] Starting flow: [ add-flow ], steps: [ add-flow ]
+[11:25:32] 
+
+ Starting | Generator to add a new flow | [ recipe::add-flow ] 
+
+? Name of the flow hello
+? Description for the flow Hello World sample flow
+? Is a generator? (if the flow creates the context) No
+? List of steps separated by commas sayHello
+[11:25:52] run stage running...
+[11:25:52] 
+
+ Finished | Generator to add a new flow - 20 s 072 ms 
+
+[11:25:52] Flow [ add-flow ] finished - 20 s 298 ms
+[11:25:52] Total time - 20 s 301 ms
+```
+
+Well, a new directory `flows` has been created:
+
+```
+-rw-r--r--  1 pisco  staff  ./flows/hello/config.json
+-rw-r--r--  1 pisco  staff  ./flows/hello/info.md
+```
+
+The configuration of the flow is in the `config.json` file:
+
+```json
+{
+  "name": "hello",
+  "description": "Hello World sample Flow",
+  "isGenerator": false,
+  "steps": {
+    "sayHello": {}
   }
 }
 ```
 
-El shot generado tiene esta pinta.
+## <a name="launch"></a>5. Launch the new command `recipe-sample`
 
-```js
-'use strict';
+Done! A new folder called `pisco-sample` has been created.
 
-module.exports = {
-    description : "Brief description of shot",
+Then you can test the new command in two different ways:
 
-    check : function(){
-        this.logger.info("#magenta","check","Check all pre-requisites for the execution");
-    },
+With [`npm link`](https://docs.npmjs.com/cli/link) the new package is linked globally, and then execute the new command:
 
-    config : function(){
-        this.logger.info("#magenta","config","Preparing params for main execution");
-    },
-
-    run : function(){
-        this.logger.info("#magenta","run","Run main execution");
-    },
-
-    prove : function(){
-        this.logger.info("#magenta","prove","Prove that the run execution was ok");
-    },
-
-    notify : function(){
-        this.logger.info("#magenta","notify","Recollect all execution information and notify");
-    }
-
-});
+```
+$ cd pisco-sample
+$ npm link
+$ mkdir test/world && cd test/world
+$ recipe-sample
+? What's up!? Choose an action for a world (Use arrow keys)
+❯ world:hello (Hello World sample flow) 
+  More commands 
+  Get help 
+  Exit 
 ```
 
-puedes ver este ejemplo aquí
+Select `world:hello` operation:
 
-[see this example in github](https://github.com/cellsjs/piscosour-examples)
+```
+? What's up!? Choose an action for a world world:hello (Hello World sample flow)
+[21:04:32] Execution contexts: [ world ]
+[21:04:32] Starting flow: [ hello ], steps: [ sayHello ]
+[21:04:32] 
+
+ Starting | Say Hello World | [ world::sayHello ] 
+
+[21:04:32] run stage running...
+HELLO WORLD
+[21:04:32] 
+
+ Finished | Say Hello World - 009 ms 
+
+[21:04:32] Flow [ hello ] finished - 024 ms
+[21:04:32] Total time - 026 ms
+```
