@@ -6,7 +6,7 @@ order: 2
 
 # Steps
 
-Steps often belong to an execution [flow](./03-flows.html), and usually are executed in a [context](./01-contexts.html).
+Steps often belong to an execution [flow](./03-flows.md), and usually are executed in a [context](./01-contexts.md).
 
 Contexts are implements with three files in the recipe:
 
@@ -73,7 +73,7 @@ Example: `"contexts": [ "context1", "context2" ]`
 
 ### `plugins` property
 
-Array of [plugins](./07-plugins.html) injected into the step.
+Array of [plugins](./07-plugins.md) injected into the step.
 
 - It is optional
 - The default value is an empty array. `"plugins": []`
@@ -82,7 +82,7 @@ Example: `"plugins": [ "plugin1", "plugin2" ]`
 
 ### `prompts` property
 
-Array of [inquire prompts](./06-inquire.html) of the step.
+Array of [inquire prompts](./06-inquire.md) of the step.
 
 - It is optional
 - The default vulue is an empty array. `"prompts": []`
@@ -108,11 +108,11 @@ Example:
 }
 ```
 
-See [inquire prompts](./06-inquire.html) for more information.
+See [inquire prompts](./06-inquire.md) for more information.
 
 ### <a name="paramaters"></a>Other customized params
 
-And others customized paramaters, see [parameters](./05-parameters.html) for more information.
+And others customized paramaters, see [parameters](./05-parameters.md) for more information.
 
 ```json
 {
@@ -183,7 +183,7 @@ The stages of a step are used to:
 1. `notify`: notify the end of the shot to someone or something.
 1. `emit`: emit the result of the step to other steps. Allow communication between steps.
 
-Please see [stages of a step](./04-stages.html) for more information. And check [advanced step feature](./09-steps-advanced.html) to help you how to implement those stages.
+Please see [stages of a step](./04-stages.md) for more information. And check [advanced step feature](./09-steps-advanced.md) to help you how to implement those stages.
 
 ## Documentation
 
