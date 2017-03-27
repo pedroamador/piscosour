@@ -6,7 +6,7 @@ order: 3
 
 # Flows
 
-Flows are a list of executed steps. A command are a flow for piscosour. The flows don't work over a context, step do that, so flows can work over multiple steps, and different contexts. 
+Flows are a list of executed steps. A command are a flow for piscosour. The flows don't work over a [context](./01-contexts-md), [step](./02-steps.md) do that, so flows can work over multiple steps, and different contexts. 
 
 The flow execution is sequential, step by step, and step are executed for each context. Note that if a step is no defined for any context it is no executed.
 

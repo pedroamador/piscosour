@@ -23,13 +23,13 @@ module.export = {
 
 Below are the available methods to fill parameters values:
 
-1. [Command line paramaters option](./cli)
-1. [External file configuration](./file)
-1. [Working Directory `.piscosour/piscosour.json` file configuration](./piscosour-json)
-1. [Receipt `.piscosour/piscosour.json` file configuration](./piscosour-json)
-1. [Flow `config.json` file configuration](./flow)
-1. [Step `config.json` file configuration](./step)
-1. [User inquire - interactive way](./interactive)
+1. [Command line paramaters option](#cli)
+1. [External file configuration](#file)
+1. [Working Directory `.piscosour/piscosour.json` file configuration](#piscosour-json)
+1. [Receipt `.piscosour/piscosour.json` file configuration](#piscosour-json)
+1. [Flow `config.json` file configuration](#flow)
+1. [Step `config.json` file configuration](#step)
+1. [User inquire - interactive way](#interactive)
 
 This is the priority order (from high to low), if a parameter is provided twice or more, with different values, then it will stay the value that is above in the list.
 
