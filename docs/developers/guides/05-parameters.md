@@ -104,7 +104,7 @@ You can also provide parameters creating in your receipt a folder `.piscosour` w
 
 Check [`piscosour.json` parameters syntax](./11-configuration.md#paramaters) for more information and examples.
 
-## <a name="flow"></a>5. Flow `config.json` file configuration
+## <a name="flow"></a>5. [Flow](./03-flows.md) `config.json` file configuration
 
 This file is placed in:
 
@@ -114,7 +114,7 @@ This file is placed in:
 
 See [flows parameters definition](./03-flows.md#parameters) for more information.
 
-## <a name="step"></a>6. Step `config.json` configuration
+## <a name="step"></a>6. [Step](./02-steps.md) `config.json` configuration
 
 This file is placed in:
 
@@ -126,7 +126,7 @@ See [flows parameters definition](./03-steps.md#parameters) for more information
 
 ## <a name="interactive"></a>7. User inquire - interactive way
 
-Inquire to the user, about the values with the `prompts` configuration.
+[Inquire](./06-inquire.md) to the user, about the values with the `prompts` configuration.
 
 Example:
 
