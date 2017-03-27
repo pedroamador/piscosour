@@ -6,7 +6,7 @@ order: 5
 
 # Parameters
 
-In the step implementation, parameters are available with `this.params`.
+In the [step](./02-steps.md) implementation, parameters are available with `this.params`.
 
 Example:
 
