@@ -4,64 +4,152 @@ layout: doc_page.html
 order: 6
 ---
 
-Para ello será necesario configurar el parámetro prompts en el fichero **params.json**. La definición de parámetros en el array de prompts usa el formato del módulo inquirer
+# Inquire parameters
 
-[Documentación de inquirer](https://www.npmjs.com/package/inquirer)
+To inquire parameters you must add the configuration in `prompts` field. This an array with customized parameters:
 
-Se han añadido dos parámetros más a la configuración de inquirer:
-
- - **env**: Nombre de la variable de entorno que se intentará usar para resolver este parámetro antes de preguntar al usuario de manera interactiva.
- - **required**: (true/false) Establece si el campo es obligatorio o no.
-
-```js
+```json
   "prompts": [
     {
       "type": "input",
-      "name": "workingDir",
-      "required" : true,
-      "message": "Where do you want to work?",
-      "env" : "bamboo_WORKING_DIR",
-      "value" : "valor fijo"
+      "name": "param1",
+      "message": "What is the value of param1"
+    }, {
+      "type": "input",
+      "name": "param2",
+      "message": "What is the value of param2"
+    }, {
+      "type": "input",
+      "name": "param3",
+      "message": "What is the value of param3"
     }
   ]
 ```
 
-### Asignar funciones a los parámetros check, validate y choices.
+See [inquirer library](https://www.npmjs.com/package/inquirer) for more information.
 
-Dado que params.json es un fichero json y no está permitido escribir código javascript se ha habilitado una forma de asignar funciones propias del step a los parámetros check, validate y choices de inquirer.
+## Fields configuration
 
-```js
+The fields to configure each parameter are:
+
+### `type` field
+
+This is the type of the prompt.
+
+- (String|[Function](#function)) type is expected
+- Optional. Default is `input`
+- Possible values: `input`, `confirm`, `list`, `rawlist`, `expand`, `checkbox`, `password`, `editor`
+
+### `name` field
+
+Name of the this new prompt.
+
+- String type is expected.
+- Mandatory
+
+### `message` field
+
+The question to print. If defined as a [function](#function), the first parameter will be the current inquirer session answers.
+
+- (String|[Function](#function)) type expected
+- Mandatory
+
+### `env` field
+
+A environment variable name, if it exists it will get its value and not prompt to the user about it.
+
+- String type expected
+- Optional
+
+### `required` field
+
+If it an optional parameters or not.
+
+- Boolean type expected
+- Optional
+
+### `default` field
+
+Default value(s) to use if nothing is entered, or a [function](#function) that returns the default value(s). If defined as a function, the first parameter will be the current inquirer session answers.
+
+- (String|Number|Array|[Function](#function)) type expected
+- Optional
+
+### `choices`
+
+Choices array or a [function](#function) returning a choices array. If defined as a [function](#function), the first parameter will be the current inquirer session answers. Array values can be simple strings, or objects containing a name (to display in list), a value (to save in the answers hash) and a short (to display after selection) properties. The choices array can also contain a Separator.
+
+- (Array|[Function](#function)) type expected
+- Optional
+
+### `validate` field
+
+Receive the user input and should return true if the value is valid, and an error message (String) otherwise. If false is returned, a default error message is provided.
+
+- [Function](#function) type expected
+
+### `filter` field
+
+Receive the user input and return the filtered value to be used inside the program. The value returned will be added to the Answers hash.
+
+- [Function](#function) type expected
+
+### `when` field
+Receive the current user answers hash and should return true or false depending on whether or not this question should be asked. The value can also be a simple boolean.
+
+([Function](#function), Boolean) type expected
+
+### `pageSize` field
+
+Change the number of lines that will be rendered when using list, rawList, expand or checkbox.
+
+- Number type expected
+
+
+## <a name="function"></a>Function type
+
+With the prefix `#` and followed by a function name (`#functionName`), it is possible to assign functions to some fields (`check`, `validate`, `choices`, ...)
+
+Example:
+
+```json
+{
   "prompts": [
     {
       "type": "input",
-      "name": "workingDir",
-      "required" : true,
-      "message": "Where do you want to work?",
-      "when" : "#workingDirFunction"
+      "name": "param1",
+      "message": "#randomMessage"
     }
   ]
+ }
 ```
 
-mediante "#...nombre de la función" le decimos a piscosour que función tiene que ejecutar inquirer al cargar la variable.
+Then in a step:
 
-Ahora en el step simplemente definimos:
-
-```js
+```javascript
 module.exports = {
-    description : "Adding step to a flow",
-
-    [...]
-
-    workingDirFunction : function(answer){
-        return answer.workingDir;
-    },
-
-    [...]
+  randomMessage: function() {
+    const randomChoice = arr => {
+      const randIndex = Math.floor(Math.random() * arr.length);
+      return arr[randIndex];
+    };
+    return randomChoice([
+      'Lorem Ipsum',
+      'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet',
+      'consectetur',
+      'adipisci velit']);
+  }
 }
 ```
 
-**answer** es el objeto completo con las respuestas del usuario.  
+Will return a random message to the User:
 
-El parámetro será this.params.workingDir="workspace".
+```
+$ recipe-sample-randomMessage ::testRandomMessage
+[15:10:51] Execution contexts: [ contextTest ]
+[15:10:52] 
 
-Creando la lista prompts en **params.json** automáticamente el step preguntará al usuario siempre que el parámetro no venga informado.
+ Starting | testRandom | [ contextTest::testRandomMessage ] 
+
+? Neque porro quisquam est qui dolorem ipsum quia dolor sit amet 
+```

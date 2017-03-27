@@ -21,7 +21,7 @@ module.export = {
 }
 ```
 
-Below are the available methods to fill parameters in the execution of steps:
+Below are the available methods to fill parameters values:
 
 1. [Command line paramaters option](./cli)
 1. [External file configuration](./file)
