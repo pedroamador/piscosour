@@ -59,7 +59,6 @@ Las recetas solo deberán informar de la configuración que quieran añadir o so
 
 # Explicación de cada parámetro
 
-
 - **cmd**: Es el comando utilizado para la ejecución de la receta cuando esta está instalada globalmente.
 - **params**: Son los parámetros globales pasados a todos los flows y steps de una receta. En nuestro ejemplo está definido un plugin a nivel global, este plugin será añadido en todos los steps de todas las recetas de pisco. [Introducción de parámetros](Load_Parameters.md)
 - **repoTypes**: Definición de los tipos de repositorio que soporta nuestra receta.
@@ -128,9 +127,88 @@ será llamada después de la ultima fase notify.
 [...]
 ```
 
-
 - **flowTypes**:
 
         "normal",
         "utils",
         "internal"
+
+# <a name="parameters"></a>Piscosour parameter syntax
+
+La definición de los parámetros incluye estos ámbitos (scopes):
+
+**Común para todos los flows que se ejecuten y por consiguiente para todos los steps contenidos:**
+
+```js
+{
+    "params": {
+        "workingDir": "workspace"
+    },
+
+    [...]
+}
+```
+
+**Común para todos los steps de un flow:** ("validate" es el nombre del flow)
+
+```js
+{
+    [...]
+    "flows" : {
+        "validate" : {
+            "params" : {
+                "workingDir": "workspace"
+            }
+        }
+    }
+    [...]
+}
+```
+
+**Común para todos los repoTypes de un step:** ("install" es el nombre del step)
+
+```js
+{
+    [...]
+    "steps" : {
+        "install" : {
+            "params" : {
+                "workingDir": "workspace"
+            }
+        }
+    }
+    [...]
+}
+```
+
+**Específico para un step y para un repoType dado:** ("component" es el repoType)
+
+```js
+{
+    [...]
+    "steps" : {
+        "install" : {
+            "component" : {
+                "params" : {
+                    "workingDir": "workspace"
+                }
+            }
+        }
+    }
+    [...]
+}
+```
+
+Todas estas opciones acabarán con el parámetro this.params.workingDir="workspace".
+
+### Prioridad:
+
+- **1** fichero .piscosour/piscosour.json al mismo nivel de la ejecución del comando.
+    - **1.1** Específico para un step y para un repoType dado.
+    - **1.2** Común para todos los repoTypes de un step.
+    - **1.3** Común para todos los steps de un flow.
+    - **1.4** Común para todos los flows.
+- **2** piscosour.json de la receta.
+    - (el mismo que el anterior)
+
+NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.

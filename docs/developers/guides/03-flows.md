@@ -89,6 +89,79 @@ Example:
 }
 ```
 
+### <a name="parameters"></a>Understanding parameters in flows
+
+The 'config.json' file of a flow has the following possibilities:
+
+**a. Common parameters for all steps**
+
+```json
+{
+  "params": {
+    "param1": "value1",
+    "param2": "value2",
+    "param3": "value3"
+  }
+}
+```
+
+**b. Common parameters for all contexts in a specific step**
+
+```json
+{
+  "params": {},
+  "steps" : {
+    "stepName" : {
+      "params" : {
+        "param1": "value1",
+        "param2": "value2",
+        "param3": "value3",
+      }
+    }
+  }
+}
+```
+
+**c. Parameters for a specific step and context**
+
+```json
+{
+  "params": {},
+  "steps" : {
+    "stepName" : {
+      "contextName" : {
+        "params" : {
+          "param1": "value1",
+          "param2": "value2",
+          "param3": "value3"
+        }
+      }
+    }
+  }
+}
+```
+
+Allways the parameters are available with `this.params`.
+
+Example:
+
+```javascript
+module.export = {
+  run: function() {
+    console.log(
+      this.params.param1,
+      this.params.param2,
+      this.params.param3);
+  }
+}
+```
+
+The priority is (from high to low):
+
+1. Parameters for a specific step and context
+1. Common parameters for all contexts in a specific step
+1. Common parameters for all steps*
+
 ### `steps` property
 
 List of sequential steps in the flow.

@@ -4,288 +4,162 @@ layout: doc_page.html
 order: 5
 ---
 
-# Lectura de parámetros desde un step
+# Parameters
 
-Todos los parametros que recibimos en un step están centralizados en **this.params**. A contiuación se enumeran los métodos disponibles para la introducción de parámetros en la ejecución de pisco o de sus recetas.
+In the step implementation, parameters are available with `this.params`.
 
-## (1) Opción en la línea de comando.
+Example:
 
-    pisco --workingDir workspace --params1 value1 --params2 value2
-
-el parámetro this.params.workingDir="workspace"
-
-También es posible pasar como parámetro de línea de comando un fichero json con definiciones de parámetros más complejas: Objetos y Arrays.
-
-    pisco --paramsFile params.json
-
-Donde params.json será algo así:
-
+```javascript
+module.export = {
+  run: function() {
+    console.log(
+      this.params.param1,
+      this.params.param2,
+      this.params.param3);
+  }
+}
 ```
+
+Below are the available methods to fill parameters in the execution of steps:
+
+1. [Command line paramaters option](./cli)
+1. [External file configuration](./file)
+1. [Working Directory `.piscosour/piscosour.json` file configuration](./piscosour-json)
+1. [Receipt `.piscosour/piscosour.json` file configuration](./piscosour-json)
+1. [Flow `config.json` file configuration](./flow)
+1. [Step `config.json` file configuration](./step)
+1. [User inquire - interactive way](./interactive)
+
+This is the priority order (from high to low), if a parameter is provided twice or more, with different values, then it will stay the value that is above in the list.
+
+## <a name="cli"></a>1. Command line parameters option
+
+Each recipe can be executed with a list of parameters with the following syntax:
+
+```sh
+$ pisco-recipe --param1 value1 --param2 value2 --param3 value3 ...
+```
+
+For example in a step implementation, this will return "value1, value2, value3":
+
+```javascript
+module.export = {
+  run: function() {
+    console.log(
+      this.params.param1,
+      this.params.param2,
+      this.params.param3);
+    // shows "value1, value2, value3"
+  }
+}
+```
+
+## <a name="file"></a>2. External file configuration
+
+The second method to provide parameters is with an external json file.
+
+```sh
+$ pisco --paramsFile params.json
+```
+
+Where `params.json`, can be any name you choose for your own parameter file. 
+
+This is very useful because you can provide complex parameters like objects and arrays.
+
+An example of a parameter file is:
+```json
 {
-  "workingDir": "workspace",
-  "params1": "value1",
-  "params2": "value2"
-  "objParam": {
-    "params3": "value3"
+  "param1": "value1",
+  "param2": {
+    "p1": "v1",
+    "p2": "v2"
   },
-  "arrayParam": [1,2,3]
+  "param3": [1, 2, 3]
  }
 ```
 
-## (2) Configuración en el fichero piscosour.json
+Where:
+- `param1` is a simple `String`
+- `param2` is an `Object`
+- `param3` is an `Array`
 
-Este fichero puede estar:
+## <a name="piscosour-json"></a>3. Working Directory `.piscosour/piscosour.json` file configuration
 
-- En el directorio .piscosour al mismo nivel desde donde se ejecuta el comando pisco.
-- En la raiz de la receta
+Another method to provide parameters is to create in the working directory where it is going to execute the recipe a folder `.piscosour` with a file called `piscosour.json`:
 
-La definición de los parámetros incluye estos ámbitos (scopes):
-
-**Común para todos los flows que se ejecuten y por consiguiente para todos los steps contenidos:**
-
-```js
-{
-    "params": {
-        "workingDir": "workspace"
-    },
-
-    [...]
-}
+```
+[CurrentWorkingDirectory]/.piscosour/piscosour.json
 ```
 
-**Común para todos los steps de un flow:** ("validate" es el nombre del flow)
+Check [`piscosour.json` parameters syntax](./11-configuration.md#parameters) for more information and examples.
 
-```js
-{
-    [...]
-    "flows" : {
-        "validate" : {
-            "params" : {
-                "workingDir": "workspace"
-            }
-        }
-    }
-    [...]
-}
+## <a name="piscosour-json"></a>4. Receipt `.piscosour/piscosour.json` file configuration
+
+You can also provide parameters creating in your receipt a folder `.piscosour` with a file called `piscosour.json`:
+
+```
+[recipeRoot]/.piscosour/piscosour.json
 ```
 
-**Común para todos los repoTypes de un step:** ("install" es el nombre del step)
+Check [`piscosour.json` parameters syntax](./11-configuration.md#paramaters) for more information and examples.
 
-```js
-{
-    [...]
-    "steps" : {
-        "install" : {
-            "params" : {
-                "workingDir": "workspace"
-            }
-        }
-    }
-    [...]
-}
+## <a name="flow"></a>5. Flow `config.json` file configuration
+
+This file is placed in:
+
+```
+[recipeRoot]/flows/[flowName]/config.json
 ```
 
-**Específico para un step y para un repoType dado:** ("component" es el repoType)
+See [flows parameters definition](./03-flows.md#parameters) for more information.
 
-```js
-{
-    [...]
-    "steps" : {
-        "install" : {
-            "component" : {
-                "params" : {
-                    "workingDir": "workspace"
-                }
-            }
-        }
-    }
-    [...]
-}
+## <a name="step"></a>6. Step `config.json` configuration
+
+This file is placed in:
+
+```
+[recipeRoot]/steps/[stepName]/config.json
 ```
 
-Todas estas opciones acabarán con el parámetro this.params.workingDir="workspace".
+See [flows parameters definition](./03-steps.md#parameters) for more information.
 
-### Prioridad:
+## <a name="interactive"></a>7. User inquire - interactive way
 
-- **1** fichero .piscosour/piscosour.json al mismo nivel de la ejecución del comando.
-    - **1.1** Específico para un step y para un repoType dado.
-    - **1.2** Común para todos los repoTypes de un step.
-    - **1.3** Común para todos los steps de un flow.
-    - **1.4** Común para todos los flows.
-- **2** piscosour.json de la receta.
-    - (el mismo que el anterior)
+Inquire to the user, about the values with the `prompts` configuration.
 
-NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
+Example:
 
-## (3) Configuración en el fichero flow.json
+In a step `steps/stepName/config.json`
 
-Este fichero se encuentra en la receta en [recipeRoot]/flows/[recipeName]/flow.json
-
-**Común para todos los steps del flow**
-
-```js
+```json
 {
-    "params": {
-        "workingDir": "workspace"
-    },
-    "steps" : {
-        [...]
-    }
-}
-```
-
-**Común para todos los repoTypes de un step** ("install" es el nombre del step)
-
-```js
-{
-    "params": {},
-    "steps" : {
-        "install" : {
-            "params" : {
-                "workingDir": "workspace"
-            }
-        }
-    }
-}
-```
-
-**Específico para un step y para un repoType dado** ("component" es el repoType)
-
-```js
-{
-    "params": {},
-    "steps" : {
-        "install" : {
-            "component" : {
-                "params" : {
-                    "workingDir": "workspace"
-                }
-            }
-        }
-    }
-}
-```
-
-Todas estas opciones acabarán con el parámetro this.params.workingDir="workspace".
-
-### Prioridad:
-
-- **1** Específico para un step y para un repoType dado.
-- **2** Común para todos los repoTypes de un step.
-- **3** Común para todos los steps de un flow.
-
-NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
-
-## (4) Configuración en el fichero params.json de un step
-
-Existen dos localizaciones para este fichero:
-
-**Común para todos los repoTypes del step** ("install" es el nombre del step)
-
-Este fichero se encuentra en la receta en [recipeRoot]/steps/[stepName]/params.json
-
-```js
-{
-    "workingDir" : "workspace"
-}
-```
-
-**Específico para un repoType dado** ("component" es el repoType)
-
-Este fichero se encuentra en la receta en [recipeRoot]/steps/[stepName]/[repoType]/params.json
-
-```js
-{
-    "workingDir" : "workspace"
-}
-```
-
-
-El parámetro será this.params.workingDir="workspace".
-
-### Prioridad:
-
-- **1** Específico para un repoType dado.
-- **2** Común para todos los repoTypes del step.
-
-NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
-
-## (5) Pregunta al usuario interactivamente.
-
-Para ello será necesario configurar el parámetro prompts en el fichero **params.json**. La definición de parámetros en el array de prompts usa el formato del módulo inquirer
-
-[Documentación de inquirer](https://www.npmjs.com/package/inquirer)
-
-Se han añadido dos parámetros más a la configuración de inquirer:
-
- - **env**: Nombre de la variable de entorno que se intentará usar para resolver este parámetro antes de preguntar al usuario de manera interactiva.
- - **required**: (true/false) Establece si el campo es obligatorio o no.
-
-```js
+  "name": "stepName",
+  "description": "step Name",
+  "contexts": [
+    "contextName"
+  ],
   "prompts": [
     {
       "type": "input",
-      "name": "workingDir",
+      "name": "param1",
       "required" : true,
-      "message": "Where do you want to work?",
-      "env" : "bamboo_WORKING_DIR",
-      "value" : "valor fijo"
+      "message": "Value of param1",
+      "default" : "value1"
     }
   ]
-```
-
-### Asignar funciones a los parámetros check, validate y choices.
-
-Dado que params.json es un fichero json y no está permitido escribir código javascript se ha habilitado una forma de asignar funciones propias del step a los parámetros check, validate y choices de inquirer.
-
-```js
-  "prompts": [
-    {
-      "type": "input",
-      "name": "workingDir",
-      "required" : true,
-      "message": "Where do you want to work?",
-      "when" : "#workingDirFunction"
-    }
-  ]
-```
-
-mediante "#...nombre de la función" le decimos a piscosour que función tiene que ejecutar inquirer al cargar la variable.
-
-Ahora en el step simplemente definimos:
-
-```js
-module.exports = {
-    description : "Adding step to a flow",
-
-    [...]
-
-    workingDirFunction : function(answer){
-        return answer.workingDir;
-    },
-
-    [...]
 }
 ```
 
-**answer** es el objeto completo con las respuestas del usuario.  
+Will ask to the user for `param1`:
 
-El parámetro será this.params.workingDir="workspace".
+```
+[12:16:55] Execution contexts: [ recipe ]
+[12:16:55] 
 
-Creando la lista prompts en **params.json** automáticamente el step preguntará al usuario siempre que el parámetro no venga informado.
+ Starting | prueba | [ recipe::prueba ] 
 
+? Value of param1 (value1) 
+```
 
-### Prioridad:
-
- Si se usa más de un método para introducir un parámetro este será el orden de prioridad usado para estar disponible en **this.params**
-
-- 1 - Parámetro por línea de comando.
-- 2 - Variable de entorno especificada en el parámetro env del prompt.
-- 3 - Configuración del fichero .piscosour/piscosour.json.
-- 4 - Configuración del fichero piscosour.json de la receta.
-- 5 - Configuración del fichero flow.json de la receta. ([recipeRoot]/flows/[recipeName]/flow.json)
-- 6 - Configuración del fichero params.json de la receta. ([recipeRoot]/steps/[stepName]/[repoType]/params.json)
-- 7 - valor del parámetro "value" dentro de un prompt.
-- 8 - Pregunta al usuario si todas las enteriores no vienen informadas.
-
-NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
+Please see [Inquire](./06-inquire.md) for more information.

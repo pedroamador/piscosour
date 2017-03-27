@@ -110,9 +110,34 @@ Example:
 
 See [inquire prompts](./06-inquire.html) for more information.
 
-### Other customized params
+### <a name="paramaters"></a>Other customized params
 
 And others customized paramaters, see [parameters](./05-parameters.html) for more information.
+
+```json
+{
+  "param1": "value1",
+  "param2": "value2",
+  "param3": "value3"
+}
+```
+
+In the step implementation, parameters are available with `this.params`.
+
+Example:
+
+```javascript
+module.export = {
+  run: function() {
+    console.log(
+      this.params.param1,
+      this.params.param2,
+      this.params.param3);
+  }
+}
+```
+
+This customized paramaters are common to all contexts.
 
 ## Implementation
 
