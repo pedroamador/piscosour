@@ -70,7 +70,7 @@ If the steps creates a context, then this flag must be with a 'true' value.
 
 ### `params` property
 
-Others customized paramaters, see [parameters](./05-parameters.html) for more information.
+Others customized paramaters, see [parameters](./05-parameters.md) for more information.
 
 - It is optional
 - The default value is an empty array. `"params": []"`
@@ -169,7 +169,7 @@ List of sequential steps in the flow.
 - It is mandatory
 - Object with the list of step-key:config. Where `config` is an object that optionally contains:
   * `type` which can be `flow` or `step` (step is default value)
-  * `params` with the list of parameters of the step. See [parameters](./05-parameters.html) for more information. *Please note that it isn't appropriate to use params into the configuration of the flow. Usually this must be configurated in the step `config.json` file. The recommendation is to use `params` just to overwrite a step parameter.*
+  * `params` with the list of parameters of the step. See [parameters](./05-parameters.md) for more information. *Please note that it isn't appropriate to use params into the configuration of the flow. Usually this must be configurated in the step `config.json` file. The recommendation is to use `params` just to overwrite a step parameter.*
   * `input` to share in a steps a previously emitted parameter in another steps. Please see [parameters between steps](./08-parameters-between-steps) for more information.
 
 Example:
