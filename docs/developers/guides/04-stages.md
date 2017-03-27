@@ -6,7 +6,7 @@ order: 4
 
 # Stages
 
-In a step, the `index.js` file implements the flow. The [scaffold](./steps.html#scaffold) generates a file like this:
+In a [step](./02-steps.md), the `index.js` file implements the flow. The [scaffold](./02-steps.md#scaffold) generates a file like this:
 
 ```javascript
 'use strict';
@@ -39,14 +39,14 @@ module.exports = {
 };
 ```
 
-And the stages of a step are used to:
+And the stages of a [step](./02-steps.md) are used to:
 
-1. `check`: check if all you need to execute this step exists.
-1. `config`: config the step to run.
-1. `run`: run main execution of the step.
-1. `prove`: check if the step has run ok.
+1. `check`: check if all you need to execute this [step](./02-steps.md) exists.
+1. `config`: config the [step](./02-steps.md) to run.
+1. `run`: run main execution of the [step](./02-steps.md).
+1. `prove`: check if the [step](./02-steps.md) has run ok.
 1. `notify`: notify the end of the shot to someone or something.
-1. `emit`: emit the result of the step to other steps. Allow communication between steps.
+1. `emit`: emit the result of the [step](./02-steps.md) to other steps. Allow communication between steps.
 
 ## Promises
 
@@ -69,24 +69,24 @@ module.exports = {
 
 ## `check` stage
 
-Check if all you need to execute this step exists. Here you can see some examples:
+Check if all you need to execute this [step](./02-steps.md) exists. Here you can see some examples:
 
-- System requirement. But check first [requirements](./requirements.html) configuration options.
-- Maybe check if some step inputs are all well formed. For example a json well formed.
+- System requirement. But check first [requirements](./10-requirements.md) configuration options.
+- Maybe check if some inputs are all well formed. For example a json well formed.
 - Or check if the environment has a global variable setted.
 - ...
 
 ## `config` stage
 
-Config the step to run. Do you need to config something, this is the stage to do it.
+Config the [step](./02-steps.md) to run. Do you need to config something, this is the stage to do it.
 
 ## `run` stage
 
-Run main execution of the step. This stage hope that all that it need to implement a process is 'ok', because it has been provide by the above stage.
+Run main execution of the [step](./02-steps.md). This stage hope that all that it need to implement a process is 'ok', because it has been provide by the above stage.
 
 ## `proove` stage
 
-Check if the step has run ok.
+Check if the [step](./02-steps.md) has run ok.
 
 - If artifacts has been well built.
 - or if there is a inexpected file created.
@@ -101,6 +101,6 @@ Notify the end of the shot to someone or something.
 
 ## `emit` stage
 
-Emit the result of the step to other steps. Allow communication between steps.
+Emit the result of the [step](./02-steps.md) to other steps. Allow communication between steps.
 
-See [parameters between steps](./08-parametes_between_steps.html) for more information.
+See [parameters between steps](./08-parametes_between_steps.md) for more information.
