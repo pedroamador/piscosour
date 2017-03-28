@@ -8,7 +8,7 @@ order: 1
 
 The `contexts` define ***where*** and ***when*** can be executed.
 
-Contexts are implements with three files in the recipe:
+Contexts are implemented with three files in the recipe:
 
 ```
 -rwxr-xr-x    1 pisco  staff   contexts/context-name/config.json
