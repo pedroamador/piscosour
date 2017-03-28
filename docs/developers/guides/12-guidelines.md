@@ -4,7 +4,7 @@ layout: doc_page.html
 order: 12
 ---
 
-# Piscosour Packaging Best Practices
+# Piscosour Packaging Guidelines
 
 The maximun power of Piscosour is when everything is separated, so is very convenient to pack steps, flows or plugins as separate as possible.
 
