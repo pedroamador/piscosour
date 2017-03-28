@@ -50,7 +50,7 @@ And the stages of a [step](./02-steps.md) are used to:
 
 ## Promises
 
-Note that all the stages are [promises](https://developer.mozilla.org/docs/Web/JavaScript/Referencia/Objetos_globales/Promise) functions, they has two optional paramenter 'resolve', 'reject';
+Note that all the stages are [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) functions, they has two optional paramenter 'resolve', 'reject';
 
 A example with `resolve` and `reject`:
 

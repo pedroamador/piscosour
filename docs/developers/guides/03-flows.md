@@ -10,9 +10,20 @@ Flows are a list of executed steps. A command are a flow for piscosour. The flow
 
 The flow execution is sequential, step by step, and step are executed for each context. Note that if a step is no defined for any context it is no executed.
 
-## Configuration
+Flows are implements with three files in the recipe:
 
-The `config.js` file has the definition of the flow. A example is:
+```
+-rwxr-xr-x    1 pisco  staff   flows/flow-name/config.json
+-rwxr-xr-x    1 pisco  staff   flows/flow-name/info.md
+```
+
+Where the `config.json` file has the configuration, `info.md` explain and document the flow.
+
+Note, it exists a [scaffold generator tool](#scaffold)
+
+## `config.json` configuration
+
+The `config.json` file has the definition of the flow. A example is:
 
 ```json
 {
@@ -34,7 +45,7 @@ The `config.js` file has the definition of the flow. A example is:
 }
 ```
 
-In the `config.js` file could be configured the following fields:
+In the `config.json` file could be configured the following fields:
 
 ### `name` property
 
@@ -160,7 +171,7 @@ The priority is (from high to low):
 
 1. Parameters for a specific step and context
 1. Common parameters for all contexts in a specific step
-1. Common parameters for all steps*
+1. Common parameters for all steps
 
 ### `steps` property
 
@@ -217,3 +228,12 @@ Example:
 ```
 
 In the above example, `mystep` is executed twice with different `myparam` configuration. It is advisable that the suffix has a semantic value which describe the differences.
+
+## <a name="scaffold"></a>Scaffold generator
+
+Pisco provides a scaffold generator. Launch it placed inside your recipe with:
+
+```sh
+$ cd your-recipe
+$ pisco recipe:add-flow
+```

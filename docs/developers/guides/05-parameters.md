@@ -122,7 +122,7 @@ This file is placed in:
 [recipeRoot]/steps/[stepName]/config.json
 ```
 
-See [flows parameters definition](./03-steps.md#parameters) for more information.
+See [flows parameters definition](./02-steps.md#parameters) for more information.
 
 ## <a name="interactive"></a>7. User inquire - interactive way
 

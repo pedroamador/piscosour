@@ -166,12 +166,12 @@ Then fill the parameters needed to create the flow:
 And a new folder called `contexts/world` has been created.
 
 ```
--rwxr-xr-x    1 pisco  staff   contexts/world/config.js
+-rwxr-xr-x    1 pisco  staff   contexts/world/config.json
 -rwxr-xr-x    1 pisco  staff   contexts/world/index.js
 -rwxr-xr-x    1 pisco  staff   contexts/world/info.md
 ```
 
-The `config.js` file has the configuration of the context:
+The `config.json` file has the configuration of the context:
 
 ```json
 {

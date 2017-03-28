@@ -11,16 +11,18 @@ The `contexts` define ***where*** and ***when*** can be executed.
 Contexts are implements with three files in the recipe:
 
 ```
--rwxr-xr-x    1 pisco  staff   contexts/context-name/config.js
+-rwxr-xr-x    1 pisco  staff   contexts/context-name/config.json
 -rwxr-xr-x    1 pisco  staff   contexts/context-name/index.js
 -rwxr-xr-x    1 pisco  staff   contexts/context-name/info.md
 ```
 
+Where the `config.json` file has the configuration, `info.md` explain and document the context, and `index.js` has the implementation of the context.
+
 Note, it exists a [scaffold generator tool](#scaffold)
 
-## Configuration
+## `config.json` configuration
 
-The `config.js` file has the definition of the context:
+The `config.json` file has the definition of the context:
 
 ```json
 {
@@ -45,7 +47,7 @@ It is a short description about the context.
 - It is mandatory
 - String type expected
 
-## Implementation
+## `index.js` implementation
 
 The `index.js` file implements a `checks` function which defines the context. Please, replace it with the following content:
 

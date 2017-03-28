@@ -1,7 +1,7 @@
 ---
 title: Best practices
 layout: doc_page.html
-order: 8
+order: 12
 ---
 
 # Piscosour Packaging Best Practices

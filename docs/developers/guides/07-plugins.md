@@ -4,149 +4,217 @@ layout: doc_page.html
 order: 7
 ---
 
-# ¿Qué es un plugin de pisco?
+# Plugins
 
-Es un prototipo que sirve para compartir funcionalidad de manera transversal entre steps y flows. El prototipo plugin actúa de dos maneras claramente diferenciadas.
+Plugins are a mixin to help developers to reuse code and functionality between [steps](./02-steps.md).
 
- 1. Como hook (o interceptor previo) en cada una de las fases del step donde esté configurado.
- 2. Como repositorio de addons (métodos añadidos al prototipo step) que añaden funcionalidad al objeto step de manera transparente.
+Plugins are implements with three files in the recipe:
 
-este es el especto de un plugin tipo:
-
-```js
-'use strict';
-
-module.exports = {
-    description : "Test plugin",
-
-    // ---- HOOKS ----
-
-    check : function(step){
-        this.logger.info("---------PLUGIN TEST--------");
-        step.test_pluginAddon("Ejemplo");
-    },
-
-    // ---- ADDONS ----
-
-    addons : {
-
-        testPluginAddon: function (message) {
-            this.logger.info("Test addon executed", name);
-        }
-    }
-};
+```
+-rwxr-xr-x    1 pisco  staff   plugins/plugin-name/config.json
+-rwxr-xr-x    1 pisco  staff   plugins/plugin-name/index.js
+-rwxr-xr-x    1 pisco  staff   plugins/plugin-name/info.md
 ```
 
-## HOOKS
- - En los hooks **this** será la referencia a la instancia step que se está ejecutando en ese momento, por lo tanto con todas las propiedades y funciones del step.
- - Las functions de los hooks deberán tener el mismo nombre que la fase (stage) que van a preceder.
- - Deberán devolver una Promesa o undefined. No está permitido hacer return de otro tipo de valor.
+There is two ways to use plugins:
 
-## ADDONS
- - Los addons son métodos que se añaden al prototipo step por lo tanto van a poderse ejecutar desde cualquier referencia a este prototipo.
- - Dentro de una función addon **this** hace referencia al step donde se está ejecutando, será una referencia a la instancia ejecutandose en ese momento con todo completamente cargado.
- - **ATENCIÓN: Los plugins añaden funciones al prototype step**. Para no sobreescribir funciones sensibles de step utilizar uno de estos dos métodos:
+1. Like a [stage hook](#hooks) that is executed previously to the step.
+1. Like a [addon](#addons), this add functionality to the object `this`. 
 
-  1. (Recomendado): Prefijar las funciones añadidas con el nombre del plugin. En nuestro ejemplo será **test**.
-  2. Crear un espacio de nombres: Esta solución pierde la referencia al **this** del propio step y habría que pasar el step al llamar a la función. En nuestro ejemplo:
+Note, it exists a [scaffold generator tool](#scaffold) that help to add a plugin to an existing receipt.
 
-  **plugin.js:**
+## `config.json` configuration
 
-```js
-'use strict';
+The `config.json` file has the definition of the step.
 
-module.exports = {
-    description : "Test plugin",
+Example:
 
-    // ---- HOOKS ----
-
-    check : function(){
-        this.logger.info("---------PLUGIN TEST--------");
-        this.test.pluginAddon(this,"Ejemplo");
-    },
-
-    // ---- ADDONS ----
-
-    addons : {
-        test : {
-            pluginAddon: function (step,message) {
-                step.logger.info("Test addon executed", message);
-            }
-        }
-    }
-};
-```
-
-
-# ¿Cómo crear un plugin?
-
-Los plugins se pueden crear en cualquier receta y podrán ser usados desde cualquier receta que importe esta receta. Crear un plugin es tan simple como:
-
-1. Crear una carpeta plugins en la raíz de tu receta.
-2. Crear una carpeta con el nombre que le queremos dar al plugin.
-3. Crear un fichero llamado **plugin.js** dentro de esta carpeta con el contenido inidicado más arriba. Es conveniente añadir un fichero info.md con la documentación específica del plugin.
-4. Listo! ya tienes tu plugin creado!
-
-Es aconsejable crear plugins en recetas separadas, es decir, crear una receta unicamente con un plugin o varios relacionados dentro con el fin de hacer una mejor gestión de las dependencias que estos plugins necesiten.
-
-# ¿Cómo usar un plugin?
-
-Usar un plugin es muy sencillo, sigue estos pasos:
-
-1. Si el plugin no está en tu receta importa el paquete npm de la receta donde se encuentre el plugin.
-
-    npm install mis-plugins --save
-
-2. Define el nombre del plugin en cualquiera de los "scopes" pisco piscosour.json, flow.json, params.json [Ver definición de parámetros](Load_Parameters.md).
-
-en el caso de piscosour.json y flow.json
-
-```js
-[....]
-  "params" : {
-    "plugins" : ["test"]
-  },
-[....]
-```
-
-en el caso de params.json
-
-```js
+```json
 {
-    "plugins" : ["test"]
+  "name": "sayHello",
+  "description": "Say Hello World"
 }
 ```
 
-3. Listo!. El plugin ejecutará todos los hooks que tenga asociados y el step tendrá disponible todos los addons que se hayan definido.
+Where the `config.json` file can configure the following fields:
 
- En nuestro ejemplo este sería el código del step que usa el plugin test:
+### `name` property
 
-```js
- 'use strict';
+Short name of the plugin, it must be descriptive and unique.
 
- module.exports = {
-     description : "Plugins test step",
+- It is mandatory
+- String type expected
 
-     config : function(resolve){
-         this.logger.info("#magenta","config","Preparing params for main execution");
-     },
+### `description` property
 
-     run : function(resolve){
-         this.logger.info("#magenta","run","Run main execution");
-         step.test_pluginAddon("our example!!");
-     },
+It is a short description about the plugin.
 
-     prove : function(resolve){
-         this.logger.info("#magenta","prove","Prove that the run execution was ok");
-     },
+- It is mandatory
+- String type expected
 
-     notify : function(resolve){
-         this.logger.info("#magenta","notify","Recollect all execution information and notify");
-     }
- };
+## `index.js` implementation
 
+The `index.js` file implements the flow. The [scaffold](#scaffold) generates a file like this:
+
+Example:
+
+```javascript
+module.exports = {
+  check: function() {
+    this.logger.info('#blue', 'running check hook...', 'Check if all you need to execute this step exists');
+  },
+
+  config: function() {
+    this.logger.info('#yellow', 'running config hook...', 'Config the step to run');
+  },
+
+  run: function(ok, ko) {
+    this.logger.info('#black', 'running run hook...', 'Run the step');
+  },
+
+  prove: function() {
+    this.logger.info('#green', 'running proove hook...', 'Check if the step has run ok');
+  },
+
+  notify: function() {
+    this.logger.info('#grey', 'running notify hook...', 'Notify the end of the shot to someone or something');
+  },
+
+  emit: function() {
+    this.logger.info('#white', 'running emit hook...', 'Emit the result of the step to other steps. Allow communication between steps');
+  },
+
+  addons: {
+    testAddon: function(param1) {
+      this.logger.info('Test addon executed', param1);
+    }
+  }
+};
 ```
 
-Al ejecutar el step aparecerá nuesto mensaje:
+### <a name="hooks"></a>Hooks
 
-![First plugin execution](images/plugins1.png)
+The hooks could be executed previously at every [stages](./04-stages.md) of a [step](./02-steps.md).
+
+1. `check`: check if all you need to execute this step exists.
+1. `config`: config the step to run.
+1. `run`: run main execution of the step.
+1. `prove`: check if the step has run ok.
+1. `notify`: notify the end of the shot to someone or something.
+1. `emit`: emit the result of the step to other steps. Allow communication between steps.
+
+- When a hook is running `this` is a [step](./02-steps.md) instance, so it could access (as the step) to all the properties and functions of `this`
+- Hooks just can return a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). It is not allowed to return other type.
+
+Example:
+
+```javascript
+module.exports = {
+  check: function() {
+    this.logger.info('#blue', 'Random Promise');
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        Math.floor(Math.random() * 2) ?
+          resolve('OK :)') :
+          reject('KO :(')
+      }, 500);
+    });
+    return promise;
+  }
+}
+```
+
+### <a name="addons"></a>Addons
+
+The addons are methods added to the object `this`.
+
+Example:
+
+`plugins/plugin-sample/index.js`:
+
+```javascript
+module.exports = {
+  addons: {
+    testAddon: function(param1) {
+      this.logger.info('Test addon executed', param1);
+    }
+  }
+};
+```
+
+Then, in a step or another plugin, it can be executed `this.testAddon`.
+
+## Configuring Plugins for a [Step](./02-steps.md)
+
+Example:
+
+### Creating a plugin
+
+First create a plugin `plugin-sample` and the files (see [scaffold](#scaffold)):
+
+- `plugins/plugin-sample/index.js`:
+
+```javascript
+module.exports = {
+  addons: {
+    testAddon: function(param1) {
+      this.logger.info('Test addon executed', param1);
+    }
+  }
+};
+```
+
+- `plugins/plugin-sample/config.json`:
+
+```json
+{
+  "name": "plugin-sample",
+  "description": "a example of plugin"
+}
+```
+
+### Configuring the step
+
+Then, if the plugin is an external dependency, check if it is defined in the `package.json` file.
+
+```sh
+$ npm install plugin-sample --save
+```
+
+In any case, you must configure the `plugins` field in `config.json` file:
+
+```json
+{
+  "name": "stepSample",
+  "description": "description of stepSample",
+  "contexts": [ "contextSample" ],
+  "plugins": [ "plugin-sample" ]
+}
+```
+
+Finally you can use `this.testAddon` in any stage of the [step](./02-steps.md).
+
+```javascript
+module.exports = {
+  run: function(ok, ko) {
+    this.testAddon('sample');
+    return;
+  }
+};
+```
+
+## Guidelines
+
+1. Create a namespace. it is advisable to create commons related plugins within a single recipe.
+1. Prefix the plugin functions with the common namespace.
+
+## <a name="scaffold"></a>Scaffold generator
+
+Pisco provides a scaffold generator. Launch it placed inside your recipe with:
+
+```sh
+$ cd your-recipe
+$ pisco recipe:add-plugin
+```
+
+

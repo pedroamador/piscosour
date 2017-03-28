@@ -11,16 +11,18 @@ Steps often belong to an execution [flow](./03-flows.md), and usually are execut
 Contexts are implements with three files in the recipe:
 
 ```
--rwxr-xr-x    1 pisco  staff   steps/step-name/config.js
+-rwxr-xr-x    1 pisco  staff   steps/step-name/config.json
 -rwxr-xr-x    1 pisco  staff   steps/step-name/index.js
 -rwxr-xr-x    1 pisco  staff   steps/step-name/info.md
 ```
 
+Where the `config.json` file has the configuration, `info.md` explain and document the step, and `index.js` has the implementation of the step.
+
 Note, it exists a [scaffold generator tool](#scaffold)
 
-## Configuration
+## `config.json` configuration
 
-The `config.js` file has the definition of the step.
+The `config.json` file has the definition of the step.
 
 Example:
 
@@ -38,7 +40,7 @@ Example:
 }
 ```
 
-The `config.js` file could configure the following fields:
+The `config.json` file can configure the following fields:
 
 ### `name` property
 
@@ -139,13 +141,11 @@ module.export = {
 
 This customized paramaters are common to all contexts.
 
-## Implementation
+## `index.js` implementation
 
 The `index.js` file implements the flow. The [scaffold](#scaffold) generates a file like this:
 
 ```javascript
-'use strict';
-
 module.exports = {
   check: function() {
     this.logger.info('#blue', 'Check if all you need to execute this step exists');
