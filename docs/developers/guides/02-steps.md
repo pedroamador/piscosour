@@ -181,7 +181,7 @@ The stages of a step are used to:
 1. `run`: run main execution of the step.
 1. `prove`: check if the step has run ok.
 1. `notify`: notify the end of the shot to someone or something.
-1. `emit`: emit the result of the step to other steps. Allow communication between steps.
+1. `emit`: emit the result of the step to other steps. Allow communication between steps. Check [parameters transmission between steps](08-parameters_betwwen_steps.md) for more information.
 
 Please see [stages of a step](./04-stages.md) for more information. And check [advanced step feature](./09-steps-advanced.md) to help you how to implement those stages.
 

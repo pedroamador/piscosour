@@ -4,9 +4,9 @@ layout: doc_page.html
 order: 8
 ---
 
-# Parameters transmision between steps
+# Parameters transmision between [steps](./02-steps.md)
 
-Sometimes we need a generated parameter in one step into another step. This is the way to do this.
+Sometimes we need to emit generated parameter from a [step](./02-steps.md) into another [step](./02-steps.md).
 
 ## Define output parameters
 
@@ -17,50 +17,53 @@ There is a special stage in steps called **'emit'**. The emit behaviour is wide 
 
 As other stages **emit** is optional
 
-Example in any step.js:
+Example in any `steps/stepName/index.js`:
 
-```js
-    emit : function(){
-        return {
-            whatever : "any text value",
-            whatevermore : {
-                some: "thing",
-                someArray: []
-            }
-        }
+```javascript
+  emit: function() {
+    return {
+      param1: "any text value",
+      param2: {
+        param3: "thing",
+        param4: []
+      }
     }
+  }
 ```
 
 ## Connect outputs with inputs in other steps.
 
-- This is can be done only in **flow.json**.
-- Input are always set into **this.params**
+- This is can be defined in the [flow](./03-flow.md) configuration).
+- Input are always set into `this.params`.
+- Inputs only can get values from previous steps in the flow.
 
-flow.json example:
+Example:
 
-```js
-    [...]
+The following code in `flows/flowName/config.json` file:
 
+```javascript
   "steps" : {
     "test1" : {},
     "test2" : {
       "inputs" : {
-        "inWhatever" : {"test1": "whatever"}
+        "param5" : {"test1": "param1"}
       }
     }
-
-    [...]
-
+  }
 ```
 
-This example set **this.params.inWhatever** parameter of **test2** step with the value of whatever output parameter emit by **test1** step
+Sets `this.params.param5` parameter of `test2` step, with the value of `this.params.param1` parameter emit by `test1`.
 
-**(*) Important:** Obviously inputs only can get values from previous steps.
+So, the step `steps/step2/index.js` could have this code:
 
-So in our example:
+```javascript
+  run: function() {
+    console.log(this.params.param5);
+  }
+```
 
-    console.log(this.params.inWhatever)
+That results in the console:
 
-result:
-
-    any text value
+```
+any text value
+```
