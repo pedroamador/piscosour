@@ -4,108 +4,139 @@ layout: doc_page.html
 order: 9
 ---
 
-## Procesos asíncronos en steps.
+# Advanced features in steps
 
-Cada una de las fases de un step realmente son promesas y reciben dos métodos resolve y reject
+Each [stage](./04-stages.md) of a [step](./02-steps.md) (except `emit` stage) are [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) functions, so its received two paramters `resolve` and `reject`.
 
-```js
-  [...]
+Two main point:
+1. [General Tips & Tricks](#tips-tricks)
+1. [Steps error handling](#error-handling)
+1. [Conditional steps](#conditional)
 
+## <a name="tips-tricks"></a>General Tips & Tricks
+
+Some [step](./02-steps.md)'s implementation **tips & tricks** are:
+
+(Please check this [advanced article](https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html) about promises for more information)
+
+### <a name="resolve-automatic"></a>1. `resolve` is executed automatically
+
+At the end of each stage, the function `resolve` is automatically executed.
+
+The following code:
+
+```javascript
   run: function(resolve, reject){
      resolve();
   }
-
-  [...]
 ```
 
-Realmente al final de cada fase se está ejecutando la function resolve de la promesa asociada, pero **se hace de una manera automática**. Si no se hace nada con estas functions el step se comporta como si todo fuera sincrono.
+Is like:
 
-### ¿Cómo manejar promesas y callbacks en un step?
+```javascript
+  run: function(resolve, reject){
+     resolve();
+  }
+```
 
-Para desactivar la ejecución automática de resolve en un step es necesario hacer un return de algo distinto de undefined.
+### 2. Usually return a value
 
-```js
-  [...]
+If you don't want to execute the `resolve` function, it is required to return a different value of `undefined`.
 
+Example:
+
+```javascript
   run: function(resolve, reject){
      return true;
   }
-
-  [...]
 ```
 
-**(\*) Importante: (NO RECOMENDABLE, MEJOR USAR UN PLUGIN)** Si queremos que algún step siga ejecutando algo en background y seguir con la ejecución del resto de steps simplemente no hacer un return de nada. Muy util para que funcionen procesos en background que necesitemas para la ejecución de la flow completa.
+### 3. Background execution
 
-Ejemplo de uso de promesas dentro de un step:
+It is possible to have a [stage](./04-stages.md) execution in background if nothing is returned.
 
-```js
-[...]
-    run : function(resolve, reject){
-    [...]
-        return this.execute("yo",this.promptArgs(["pisco-recipe"])).then(resolve,reject);
+This is useful with flow that has more than one step, and one of this steps needs to be executed in background (for example, a background process to convert 'sass' to 'css').
+
+Maybe, it could have more sense to implement the background function in a [plugin](07-plugins.md).
+
+### 4. Delegate promises to [plugins](07-plugins.md)
+
+A good practice is to delegate [promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to [plugins](07-plugins.md).
+
+Example:
+
+```javascript
+  run : function(resolve, reject) {
+    return this.execute("pwd").then(resolve,reject);
+  }
+```
+
+Where:
+- `this.execute` is a 'core' plugin that returns a promise. If we return this promise, then the `resolve()` will be not [called automatically](#resolve-automatic").
+- The [stage](./04-stages.md) will finish when the [plugin](07-plugins.md) `this.execute` is over, because `resolve()` and `reject()` are parameters of `then()`.
+
+## <a name="error-handling"></a>[Steps](02-steps.md) error handling
+
+Usually when there is a error in a [step](./02-steps.md), and it is an unhandling error, then the execution of all the flow will finish.
+
+### `reject()` with `keep` field
+
+If we don't want to stop all the [flow](./03-flows.md) execution, for a error in a [step](./02-steps.md), then called `reject()` with `{keep: true}`.
+
+```javascript
+reject({keep: true});
+``` 
+
+- By default `keep` is `false`.
+
+### `reject()` with `error` field
+
+You can send a descriptive text error calling `reject()` with `{error: txt}`
+
+```javascript
+reject( { error: 'descriptive text error' } );
+```
+
+### `reject()` with `data` field
+
+`data` in the `reject()` function allows to send more detail about the error, this is very interesting when we use piscosour for continuous integration (jenkins, bamboo, travis, ...) with the junit option.
+
+```javascript
+reject( { data: 'details of the error' } );
+```
+
+### `reject()` example
+
+All field (`keep`, `error`, `data`) can work together:
+
+```javascript 
+module.export = {
+  run: function(resolve, reject) {
+    reject({
+        keep: true,
+        error: 'error text',
+        data: 'detail\'s error'
+    })
+  }
+}
+```
+
+## <a name="conditional"></a>Conditional [steps](./02-steps.md)
+
+Steps could be executed conditionally evaluating a customized expression in the `check()` [stage](./04-stages.md).
+
+### `resolve()` with `skip` field
+
+So below there is an example about how could be executed conditionally a step. This condition may be implemnented in the `check()` [stage](./04-stages.md). And if the step must be skipped and not executed, please provide to `resolve()` a field with `{skip: true}`
+
+Example:
+
+```javascript
+  check : function(resolve, reject) {
+    if (this.params.needThisstep) {
+      resolve({skip: true});
     }
-[...]
-
+  }
 ```
 
-- this.exexute devuelve una promesa, si hacemos return de esa promesa no estámos devolviendo undefined, por lo tanto el resolve de la promesa no será llamado automáticamente.
-- al pasarle los resolve y reject mediante el then a la promesa el step terminará cuando esta promesa termine.
-
-### Errores en steps
-
-Si se produce un error en un step y este error no está controlado, **la ejecución de toda la flow parará**. Si queremos registrar un error pero no queremos parar la ejecución de todo el flow deberemos devolver un objeto con la variable keep: true
-
-```js
-[...]
-    run : function(resolve, reject){
-
-        reject({keep:true, error: txt});
-    }
-[...]
-
-```
-
-para parar la ejecución dando un error de una menera deliverada:
-
-```js
- [...]
-     run : function(resolve, reject){
-
-        if (error)
-         reject({error: text});
-     }
- [...]
-
-```
-
-Adicionalmente se puede devolver más información sobre el error producido mediante *'data'*. Es especialmente útil en el caso en que se gerere un fichero junit y queremos que aparezcan el detalle del error en el entorno de integración continua (jenkins, bamboo o similar).
-
-```js
- [...]
-     run : function(resolve, reject){
-
-        if (error)
-         reject({error: text, data: details});
-     }
- [...]
-
-```
-
-### Ejecuciones condicionales de steps.
-
-Hace posible en función de unas comprobaciones iniciales, por ejemplo un parámetro de configuración o opción pasada por línea de comando, que la ejecución de un step se realice o no.
-
-Para ello en la fase **check** del step deveremos devolver un objeto con el parámetro **skip:true** al ejecutar resolve.
-
-```js
- [...]
-     check : function(resolve, reject){
-
-        if (this.params.needThisstep)
-         resolve({skip: true});
-     }
- [...]
-
-```
-
-El resto de las stages del step no se ejecutará. por ejemplo si en run limpiamos un directorio mediante este método el limpiado del directorio no se llevará a cabo.
+So, the remaining [stages](./04-stages.md) of this steps are not going to be executed.

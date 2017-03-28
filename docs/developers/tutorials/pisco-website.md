@@ -1,5 +1,5 @@
 ---
-title: What is Piscosour
+title: Create WebSite Receipt
 layout: doc_page.html
 order: 2
 ---

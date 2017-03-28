@@ -1,21 +1,16 @@
 ---
-title: Configuration
+title: Receipt Configuration
 layout: doc_page.html
 order: 11
 ---
 
-# El fichero de configuración piscosour.json
+# `piscosour.json` configuration
 
-Este fichero se encuentra en la raiz de todas las recetas y configura todos los aspectos de la aplicación. La configuración es heredada por todas las recetas importada como paquete dentro de una receta.
+`piscosour.json` is the file which defines the general configuration of the receipt. It is placed at the root directory of the receipt.
 
-**La configuración efectiva es la mezcla de todas las configuraciones de todas las recetas**
+The configuration receipt could be overwritten with others available methods to fill parameters values. See [parameters](./05-parameters.md) configuration.
 
-(se puede consultar la configuración efectiva de pisco ejecutando pisco -ov)
-
-El módulo Piscosour tiene un fichero de configuración más completo, que podrá ser sobreescrito por cualquier receta. El orden de prioridad en la carga de la configuración es el establecido en el articulo: [Introducción de parámetros](Load_Parameters.md)
-
-
-Este es el aspecto de piscosour.json del modulo piscosour
+This is the general configuration file (`piscosour.json`) of piscosour:
 
 ```json
 {
@@ -23,10 +18,10 @@ Este es el aspecto de piscosour.json del modulo piscosour
   "params" : {
     "plugins" : ["inquirer"]
   },
-  "repoTypes": [
+  "contexts": [
     "recipe"
   ],
-  "defaultType": "recipe",
+  "defaultContext": "recipe",
   "junitDir": "test-reports",
   "junitPiscoFile": "pisco-junit.xml",
   "stages": [
@@ -45,170 +40,150 @@ Este es el aspecto de piscosour.json del modulo piscosour
 }
 ```
 
-Las recetas solo deberán informar de la configuración que quieran añadir o sobreescribir. Este es el fichero piscosour.json tipo de una receta:
+Then the different methods to configure (receipts, flows, steps, ...) will just add or remove configuration over the existing configuration.
+
+Example of a receipt:
 
 ```json
 {
-    "cmd": "cells",
-    "repoTypes": [
-        "component"
-    ],
-    "defaultType": "component"
+  "cmd": "cells",
+  "defaultContext": ""
 }
 ```
 
-# Explicación de cada parámetro
+## Main fields
 
-- **cmd**: Es el comando utilizado para la ejecución de la receta cuando esta está instalada globalmente.
-- **params**: Son los parámetros globales pasados a todos los flows y steps de una receta. En nuestro ejemplo está definido un plugin a nivel global, este plugin será añadido en todos los steps de todas las recetas de pisco. [Introducción de parámetros](Load_Parameters.md)
-- **repoTypes**: Definición de los tipos de repositorio que soporta nuestra receta.
-- **defaultType**: Tipo de repositorio por defecto. Será el usado para la ejecución de comandos sin especificar tipo de repositorio.
+### `cmd` field
 
-Si ejecutas
+Command name, this command will be executed in a console when the receipt is globally installed.
 
-    pisco create
+### `params` field
 
-es como si estuviera ejecutando
+Global parameters, applies to all [flows](./03-flows.md) and [steps](./02-steps.md). See [parameter](./05-parameters.md) for more information.
 
-    pisco recipe:create
+### `contexts` field
 
-sin embarcon en el ejemplo de abajo
+Global contexts. See [contexts](./01-contexts.md) for more information.
 
-    cells create
+### `defaultContext` field
 
-sería:
+Default context which will be applied when context is not provided.
 
-    cells component:create
+### `junitDir` and `junitPiscoFile` fields
 
-- **junitDir**: Directorio donde se grabará el fichero junit.xml
-- **junitPiscoFile**: nombre del fichero junit.xml que se generará cuando se ejecute pisco con "-u".
-- **stages**: Fases que recorrerán todos los steps de la receta. Estas fases serán llamadas en todos los steps si corresponden con functions. Se pueden añadir más fases a las preestablecidas en el fichero raiz de pisco. **Nunca eliminar**
-Actualmente son :  "check",  "config",  "run", "prove", "notify"
+`junitDir` is the Folder where will save the `junit.xml` file.
+`junitPiscoFile` is a customized name of the `junit.xml` file.
 
-notese que corresponden con los métodos a implementar dentro de un step:
+These configurations are available when pisco write a junit report.
 
-```js
-    check : function(){
-        this.logger.info("#magenta","check","Check all pre-requisites for the execution");
-    },
-
-    config : function(){
-        this.logger.info("#magenta","config","Preparing params for main execution");
-    },
-
-    run : function(){
-        this.logger.info("#magenta","run","Run main execution");
-    },
-
-    prove : function(){
-        this.logger.info("#magenta","prove","Prove that the run execution was ok");
-    },
-
-    notify : function(){
-        this.logger.info("#magenta","notify","Recollect all execution information and notify");
-    }
+```sh
+$ pisco --junitReport
+$ pisco -u
 ```
 
-si en un fichero piscosour.json se añade otra fase está será llamada si el step la tiene implementado. Por ejemplo:
+### `stages` field
 
-```js
-[...]
- "stages": ["final"]
-[...]
-```
+Default stages. See [stages](./04-stages.md) for more information.
 
-será llamada después de la ultima fase notify.
+If it is added a new stage, and will be just executed if the step has its implementation.
 
-```js
-[...]
-    final : function(){
-        this.logger.info("#magenta","notify","Recollect all execution information and notify");
-    }
-[...]
-```
-
-- **flowTypes**:
-
-        "normal",
-        "utils",
-        "internal"
-
-# <a name="parameters"></a>Piscosour parameter syntax
-
-La definición de los parámetros incluye estos ámbitos (scopes):
-
-**Común para todos los flows que se ejecuten y por consiguiente para todos los steps contenidos:**
-
-```js
+```json
 {
-    "params": {
-        "workingDir": "workspace"
-    },
-
-    [...]
+ "stages": [ "final" ]
 }
 ```
 
-**Común para todos los steps de un flow:** ("validate" es el nombre del flow)
+After `notify` stage, customized `final` stage will be executed.
 
-```js
+```javascript
+  final : function() {
+    this.logger.info("#magenta","notify","Recollect all execution information and notify");
+  }
+```
+
+### `flowTypes` field
+
+See [flows](./03-flows.md) for more information.
+
+## <a name="parameters"></a>Piscosour parameter syntax
+
+Configuration has different options according to the scopes:
+
+### Global configuration
+
+For all flows, steps and contexts
+
+```json
 {
-    [...]
-    "flows" : {
-        "validate" : {
-            "params" : {
-                "workingDir": "workspace"
-            }
+  "params": {
+    "param1": "value1"
+  }
+}
+```
+
+### Flow configuration
+
+Just for a flow and all its steps and contexts.
+
+```json
+{
+  "flows" : {
+    "flowName" : {
+      "params" : {
+        "param1": "value1"
+      }
+    }
+  }
+}
+```
+
+### Step configuration
+
+Just for a step and all its contexts.
+
+```json
+{
+  "steps" : {
+    "stepName" : {
+      "params" : {
+        "param1": "value1"
+      }
+    }
+  }
+}
+```
+
+### Step & Context configuration
+
+Just for a step and a context.
+
+```json
+{
+  "steps" : {
+    "stepName" : {
+      "contextName" : {
+        "params" : {
+          "param1": "value1"
         }
+      }
     }
-    [...]
+  }
 }
 ```
 
-**Común para todos los repoTypes de un step:** ("install" es el nombre del step)
+In a [step](./02-steps) all parameters are accessible with `this.params.param1`.
 
-```js
-{
-    [...]
-    "steps" : {
-        "install" : {
-            "params" : {
-                "workingDir": "workspace"
-            }
-        }
-    }
-    [...]
-}
-```
+### Priority:
 
-**Específico para un step y para un repoType dado:** ("component" es el repoType)
+- **1** `.piscosour/piscosour.json` file in the current working directory where recipe is executed.
+    - **1.1** Step & Context configuration
+    - **1.2** Step configuration
+    - **1.3** Flow configuration
+    - **1.4** Global configuration
+- **2** `piscosour.json` file of the receipt.
+    - **1.1** Step & Context configuration
+    - **1.2** Step configuration
+    - **1.3** Flow configuration
+    - **1.4** Global configuration
 
-```js
-{
-    [...]
-    "steps" : {
-        "install" : {
-            "component" : {
-                "params" : {
-                    "workingDir": "workspace"
-                }
-            }
-        }
-    }
-    [...]
-}
-```
-
-Todas estas opciones acabarán con el parámetro this.params.workingDir="workspace".
-
-### Prioridad:
-
-- **1** fichero .piscosour/piscosour.json al mismo nivel de la ejecución del comando.
-    - **1.1** Específico para un step y para un repoType dado.
-    - **1.2** Común para todos los repoTypes de un step.
-    - **1.3** Común para todos los steps de un flow.
-    - **1.4** Común para todos los flows.
-- **2** piscosour.json de la receta.
-    - (el mismo que el anterior)
-
-NOTA: En caso de estar definido varias veces un parámetro será sobre-escrito por el número más pequeño de esta lista.
+This is the priority order (from high to low), if a parameter is provided twice or more, with different values, then it will stay the value that is above in the list.

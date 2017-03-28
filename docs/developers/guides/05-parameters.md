@@ -33,6 +33,13 @@ Below are the available methods to fill parameters values:
 
 This is the priority order (from high to low), if a parameter is provided twice or more, with different values, then it will stay the value that is above in the list.
 
+The **effective configuration** has the merge from all methods and applying this above priority. The **effective configuration** could be inquired with `-ov` parameters over the recipe or `pisco` command:
+
+```sh
+$ recipe-name -ov
+$ pisco -ov
+```
+ 
 ## <a name="cli"></a>1. Command line parameters option
 
 Each recipe can be executed with a list of parameters with the following syntax:
